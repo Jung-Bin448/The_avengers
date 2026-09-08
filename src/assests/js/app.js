@@ -1,97 +1,102 @@
-// =========================
-// GET ELEMENTS
-// =========================
-
-const loginButton = document.getElementById("loginButton");
+// ==========================================
+// SHARED ELEMENTS
+// ==========================================
 
 const googleButton = document.getElementById("googleButton");
-
 const facebookButton = document.getElementById("facebookButton");
 
-const signupLink = document.getElementById("signupLink");
+// Google Button Click
+if (googleButton) {
+    googleButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        alert("Google button clicked!");
+    });
+}
 
+// Facebook Button Click
+if (facebookButton) {
+    facebookButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        alert("Facebook button clicked!");
+    });
+}
+
+// ==========================================
+// LOGIN PAGE LOGIC (login.php)
+// ==========================================
+
+const loginButton = document.getElementById("loginButton");
 const emailInput = document.getElementById("email");
-
 const passwordInput = document.getElementById("password");
 
+if (loginButton && emailInput && passwordInput && !document.getElementById("username")) {
+    loginButton.addEventListener("click", function (e) {
+        e.preventDefault(); // Prevents page reload
 
-// =========================
-// LOGIN
-// =========================
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
 
-loginButton.addEventListener("click", function () {
+        if (email === "") {
+            alert("Please enter your email.");
+            emailInput.focus();
+            return;
+        }
 
-    const email = emailInput.value.trim();
+        if (password === "") {
+            alert("Please enter your password.");
+            passwordInput.focus();
+            return;
+        }
 
-    const password = passwordInput.value.trim();
+        alert("Login button clicked successfully!");
+        console.log("Email:", email);
+        console.log("Password:", password);
+    });
+}
 
+// ==========================================
+// SIGN UP PAGE LOGIC (signup.php)
+// ==========================================
 
-    // Check empty fields
+const signupButton = document.getElementById("signupButton");
+const usernameInput = document.getElementById("username");
+const confirmPasswordInput = document.getElementById("confirm_password");
 
-    if (email === "") {
-        alert("Please enter your email.");
-        emailInput.focus();
-        return;
-    }
+if (signupButton) {
+    signupButton.addEventListener("click", function (e) {
+        e.preventDefault(); // Prevents page reload
 
+        const username = usernameInput ? usernameInput.value.trim() : "";
+        const email = emailInput ? emailInput.value.trim() : "";
+        const password = passwordInput ? passwordInput.value.trim() : "";
+        const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value.trim() : "";
 
-    if (password === "") {
-        alert("Please enter your password.");
-        passwordInput.focus();
-        return;
-    }
+        if (username === "") {
+            alert("Please enter a username.");
+            usernameInput.focus();
+            return;
+        }
 
+        if (email === "") {
+            alert("Please enter your email.");
+            emailInput.focus();
+            return;
+        }
 
-    // Basic email validation
+        if (password === "") {
+            alert("Please enter your password.");
+            passwordInput.focus();
+            return;
+        }
 
-    if (!email.includes("@")) {
-        alert("Please enter a valid email address.");
-        emailInput.focus();
-        return;
-    }
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            confirmPasswordInput.focus();
+            return;
+        }
 
-
-    // Temporary login message
-
-    alert("Login successful!");
-
-
-    console.log("Email:", email);
-    console.log("Password:", password);
-
-});
-
-
-// =========================
-// GOOGLE LOGIN
-// =========================
-
-googleButton.addEventListener("click", function () {
-
-    alert("Google login will be connected later.");
-
-});
-
-
-// =========================
-// FACEBOOK LOGIN
-// =========================
-
-facebookButton.addEventListener("click", function () {
-
-    alert("Facebook login will be connected later.");
-
-});
-
-
-// =========================
-// SIGN UP
-// =========================
-
-signupLink.addEventListener("click", function (event) {
-
-    event.preventDefault();
-
-    alert("Sign Up page will be added next.");
-
-});
+        alert("Sign Up button clicked successfully!");
+        console.log("Username:", username);
+        console.log("Email:", email);
+    });
+}
