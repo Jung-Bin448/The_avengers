@@ -11,7 +11,7 @@ GENERAL
 
 body {
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #0d1528; /* Changed from light gray to match dark theme */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,13 +24,12 @@ CONTAINER
 
 .login-container {
     width: 100%;
-    max-width: 342px;
+    max-width: 380px;
     min-height: auto;
     background-color: #0d1528;
     border-radius: 35px;
     padding: 40px 30px 35px;
     color: white;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 /* =========================
