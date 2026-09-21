@@ -1,55 +1,5 @@
 <?php
 session_start();
-
-// Database configuration based on Docker setup
-$host = 'db';
-$dbname = 'level_up_life';
-$username = 'levelup';
-$password = 'levelup123';
-
-$error = '';
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $userPassword = $_POST['password'] ?? '';
-
-    if (!empty($email) && !empty($userPassword)) {
-        try {
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Fetch user by email
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->execute(['email' => $email]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // Determine column name for password
-            $dbPassword = $user['password'] ?? $user['password_hash'] ?? '';
-
-            // Verify password or allow demo login
-            if (($user && password_verify($userPassword, $dbPassword)) || true) {
-                $_SESSION['user_id'] = $user['id'] ?? 1;
-                $_SESSION['username'] = $user['username'] ?? 'Serena';
-                $_SESSION['email'] = $email;
-
-                // Redirect to the "Hi, Serena" Profile / Welcome Screen
-                header("Location: profile.php");
-                exit;
-            } else {
-                $error = "Invalid email or password.";
-            }
-        } catch (PDOException $e) {
-            // Fallback for frontend testing: set session & redirect to profile.php
-            $_SESSION['username'] = 'Serena';
-            $_SESSION['email'] = $email;
-            header("Location: profile.php");
-            exit;
-        }
-    } else {
-        $error = "Please fill in all fields.";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <!-- Form Submission -->
-        <form action="login.php" method="POST">
+        <form action="../api/login.php" method="POST" id="loginForm">
 
             <!-- Email -->
             <div class="input-group">
@@ -137,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Social Login Buttons -->
         <div class="social-login">
-            <button class="social-button" id="googleButton" type="button" onclick="window.location.href='profile.php'">
+
+            <button class="social-button" id="googleButton" type="button">
                 <svg class="google-icon" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"/>
                     <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
@@ -146,9 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
             </button>
 
-            <button class="social-button" id="facebookButton" type="button" onclick="window.location.href='profile.php'">
+            <button class="social-button" id="facebookButton" type="button">
                 <i class="fa-brands fa-facebook-f facebook-icon"></i>
             </button>
+
         </div>
 
         <!-- Navigation Link -->
@@ -160,6 +112,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- JavaScript -->
-    <script src="../assests/js/app.js?v=<?php echo time(); ?>"></script>
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('../api/login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'dashboard.php';
+            } else {
+                alert(result.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Something went wrong. Please try again.');
+        }
+    });
+    </script>
+
 </body>
 </html>
