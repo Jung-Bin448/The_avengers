@@ -151,7 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- JavaScript (Points to src/assests/js/app.js) -->
-    <script src="../assests/js/app.js"></script>
-
+    <script src="../assests/js/app.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

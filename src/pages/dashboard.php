@@ -1,346 +1,152 @@
 <?php
 session_start();
 
-$host = 'localhost';
-$dbname = 'levelup_life';
-$username = 'root';
-$password = '';
+// Database configuration based on Docker setup
+$host = 'db';
+$dbname = 'level_up_life';
+$username = 'levelup';
+$password = 'levelup123';
+
+// Mock user data fallback if database user is not logged in
+$user = [
+    'username' => $_SESSION['username'] ?? 'Alex',
+    'rank' => 'Level 5 Adventurer',
+    'progress' => 72,
+    'completed_quests' => 2,
+    'total_quests' => 5,
+    'energy' => '100 / 100',
+    'gold' => '1,240',
+    'streak' => '7 Days',
+    'skill_points' => '5 Available'
+];
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
+    if (isset($_SESSION['user_id'])) {
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$user_name = $_SESSION['username'] ?? 'Alex';
-$current_level = $_SESSION['current_level'] ?? 5;
-$level_title = "Level $current_level Adventurer";
-$level_progress = 72; // %
-$daily_completed = 2;
-$daily_total = 5;
-$daily_percent = round(($daily_completed / $daily_total) * 100);
-$energy = "100 / 100";
-$gold = "1,240";
-$streak_days = $_SESSION['streak_count'] ?? 7;
-$skill_points = 5;
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute(['id' => $_SESSION['user_id']]);
+        $dbUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($dbUser) {
+            $user['username'] = $dbUser['username'];
+            $user['rank'] = "Level " . ($dbUser['current_level'] ?? 5) . " Adventurer";
+            $user['streak'] = ($dbUser['streak_count'] ?? 7) . " Days";
+        }
+    }
+} catch (PDOException $e) {
+    // Silently fall back to default dashboard values if DB is offline
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Level-Up Life</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0b0f19;
-            --card-bg: #141a29;
-            --card-inner: #1a2235;
-            --teal-accent: #00e5a3;
-            --purple-accent: #8b5cf6;
-            --text-muted: #8e9bb0;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .app-container {
-            max-width: 430px;
-            margin: 0 auto;
-            padding: 20px 18px;
-        }
-
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .notification-bell {
-            background: rgba(255, 255, 255, 0.05);
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        /* Custom Progress Bar */
-        .progress-bar-container {
-            margin-bottom: 25px;
-        }
-        .custom-progress {
-            height: 10px;
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .custom-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00d2ff 0%, var(--teal-accent) 100%);
-            border-radius: 20px;
-        }
-
-        /* Stat Cards */
-        .stat-card {
-            background-color: var(--card-bg);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            position: relative;
-        }
-
-        .stat-card-sm {
-            height: 100%;
-        }
-
-        .icon-badge {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-        }
-
-        .circular-progress {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            background: conic-gradient(var(--teal-accent) <?= $daily_percent * 3.6 ?>deg, #1d273c 0deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .circular-progress-inner {
-            width: 42px;
-            height: 42px;
-            background-color: var(--card-bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        /* Floating Add Button in Chart Card */
-        .add-float-btn {
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            color: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 430px;
-            background-color: #0b0f19;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
-        }
-
-        .nav-item-custom {
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-item-custom.active, .nav-item-custom:hover {
-            color: #ffffff;
-        }
-    </style>
+    <title>Level Up Life - Dashboard</title>
+    <link rel="stylesheet" href="../assests/css/Style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
 <div class="app-container">
+
     <!-- Top Header -->
-    <div class="header-section">
+    <div class="app-header">
         <div>
-            <h2 class="fw-bold mb-0">Hi,<?= htmlspecialchars($user_name) ?>!</h2>
-            <small class="text-secondary"><?= htmlspecialchars($level_title) ?></small>
+            <div class="user-greeting">Hi,<?php echo htmlspecialchars($user['username']); ?>!</div>
+            <div class="user-rank"><?php echo htmlspecialchars($user['rank']); ?></div>
         </div>
-        <div class="notification-bell">
+        <div class="header-icon">
             <i class="fa-regular fa-bell"></i>
         </div>
     </div>
 
-    <!-- Level Progress -->
-    <div class="progress-bar-container">
-        <div class="d-flex justify-content-between text-secondary mb-1" style="font-size: 0.8rem;">
-            <span>Level Progress: <?= $level_progress ?>%</span>
-        </div>
-        <div class="custom-progress">
-            <div class="custom-progress-fill" style="width: <?= $level_progress ?>%;"></div>
+    <!-- Level Progress Bar -->
+    <div class="level-progress-container">
+        <div class="progress-label">Level Progress: <?php echo $user['progress']; ?>%</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: <?php echo $user['progress']; ?>%;"></div>
         </div>
     </div>
 
-    <!-- Daily Quests Summary -->
-    <div class="stat-card d-flex justify-content-between align-items-center">
+    <!-- Daily Quests Card -->
+    <div class="dashboard-card daily-quests-card">
         <div>
-            <h6 class="fw-bold mb-1">Daily Quests</h6>
-            <small class="text-secondary"><?= $daily_completed ?> of <?= $daily_total ?> Completed</small>
+            <div class="card-title">Daily Quests</div>
+            <div class="card-subtitle"><?php echo $user['completed_quests']; ?> of <?php echo $user['total_quests']; ?> Completed</div>
         </div>
         <div class="circular-progress">
-            <div class="circular-progress-inner">
-                <?= $daily_percent ?>%
-            </div>
+            <div class="circular-progress-inner">40%</div>
         </div>
     </div>
 
     <!-- Stats Grid -->
-    <div class="row g-3 mb-3">
+    <div class="stats-grid">
         <!-- Energy -->
-        <div class="col-6">
-            <div class="stat-card stat-card-sm d-flex justify-content-between align-items-start">
-                <div>
-                    <small class="text-secondary d-block mb-1">Energy</small>
-                    <span class="fw-bold fs-6"><?= $energy ?></span>
-                </div>
-                <div class="icon-badge text-warning"><i class="fa-solid fa-bolt"></i></div>
+        <div class="dashboard-card">
+            <div class="stat-header">
+                <span class="card-title">Energy</span>
+                <i class="fa-solid fa-bolt" style="color: #f1c40f;"></i>
             </div>
+            <div class="stat-value"><?php echo $user['energy']; ?></div>
         </div>
 
         <!-- Gold -->
-        <div class="col-6">
-            <div class="stat-card stat-card-sm d-flex justify-content-between align-items-start">
-                <div>
-                    <small class="text-secondary d-block mb-1">Gold</small>
-                    <span class="fw-bold fs-6"><?= $gold ?></span>
-                </div>
-                <div class="icon-badge" style="background:#f59e0b; color:#ffffff;"><i class="fa-solid fa-coins"></i></div>
+        <div class="dashboard-card">
+            <div class="stat-header">
+                <span class="card-title">Gold</span>
+                <i class="fa-solid fa-coins" style="color: #f39c12;"></i>
             </div>
+            <div class="stat-value"><?php echo $user['gold']; ?></div>
         </div>
 
         <!-- Streak -->
-        <div class="col-6">
-            <div class="stat-card stat-card-sm d-flex justify-content-between align-items-start">
-                <div>
-                    <small class="text-secondary d-block mb-1">Streak</small>
-                    <span class="fw-bold fs-6"><?= $streak_days ?> Days</span>
-                </div>
-                <div class="icon-badge text-info"><i class="fa-solid fa-planet-ringed"></i><i class="fa-solid fa-globe"></i></div>
+        <div class="dashboard-card">
+            <div class="stat-header">
+                <span class="card-title">Streak</span>
+                <i class="fa-solid fa-fire" style="color: #e74c3c;"></i>
             </div>
+            <div class="stat-value"><?php echo $user['streak']; ?></div>
         </div>
 
         <!-- Skill Points -->
-        <div class="col-6">
-            <div class="stat-card stat-card-sm d-flex justify-content-between align-items-start">
-                <div>
-                    <small class="text-secondary d-block mb-1">Skill Points</small>
-                    <span class="fw-bold fs-6"><?= $skill_points ?> Available</span>
-                </div>
-                <div class="icon-badge text-warning"><i class="fa-solid fa-star"></i></div>
+        <div class="dashboard-card">
+            <div class="stat-header">
+                <span class="card-title">Skill Points</span>
+                <i class="fa-solid fa-star" style="color: #f1c40f;"></i>
             </div>
+            <div class="stat-value"><?php echo $user['skill_points']; ?></div>
         </div>
     </div>
 
-    <!-- Skill Mastery / XP Chart -->
-    <div class="stat-card position-relative pb-4">
-        <h6 class="fw-bold mb-0">Skill Mastery / XP History</h6>
-        <small class="text-secondary d-block mb-3" style="font-size: 0.75rem;">Avg: 450 XP/day</small>
+    <!-- Skill Mastery / XP History -->
+    <div class="dashboard-card">
+        <div class="card-title">Skill Mastery / XP History</div>
+        <div class="card-subtitle" style="margin-bottom: 15px;">Avg: 450 XP/day</div>
         
-        <div style="height: 120px;">
-            <canvas id="xpChart"></canvas>
-        </div>
-
-        <a href="quests.php" class="add-float-btn">
-            <i class="fa-solid fa-plus"></i>
-        </a>
+        <!-- SVG XP History Chart -->
+        <svg viewBox="0 0 300 100" style="width: 100%; height: auto;">
+            <path d="M 10,80 Q 75,20 150,60 T 290,90" fill="none" stroke="#7c4dff" stroke-width="3"/>
+            <path d="M 10,90 Q 75,90 150,50 T 290,20" fill="none" stroke="#00d2b5" stroke-width="3"/>
+            
+            <circle cx="230" cy="30" r="5" fill="#00d2b5"/>
+            <circle cx="120" cy="35" r="5" fill="#7c4dff"/>
+        </svg>
     </div>
+
 </div>
 
 <!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
-    <a href="#" class="nav-item-custom"><i class="fa-solid fa-cart-shopping text-warning"></i></a>
-    <a href="#" class="nav-item-custom"><i class="fa-regular fa-copy"></i></a>
-    <a href="quests.php" class="nav-item-custom"><i class="fa-solid fa-swords"></i></a>
-    <a href="#" class="nav-item-custom"><i class="fa-solid fa-users text-danger"></i></a>
-    <a href="#" class="nav-item-custom active"><i class="fa-regular fa-user"></i></a>
+    <a href="shop.php" class="nav-item"><i class="fa-solid fa-cart-shopping"></i></a>
+    <a href="parties.php" class="nav-item"><i class="fa-regular fa-copy"></i></a>
+    <a href="quests.php" class="nav-item"><i class="fa-solid fa-shield-halved"></i></a>
+    <a href="parties.php" class="nav-item"><i class="fa-solid fa-users"></i></a>
+    <a href="profile.php" class="nav-item active"><i class="fa-solid fa-user"></i></a>
 </div>
 
-<script>
-    // XP Line Chart setup using Chart.js
-    const ctx = document.getElementById('xpChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['1', '2', '3', '4', '5'],
-            datasets: [
-                {
-                    data: [110, 160, 120, 90, 100],
-                    borderColor: '#8b5cf6',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#8b5cf6'
-                },
-                {
-                    data: [35, 60, 100, 150, 40],
-                    borderColor: '#00e5a3',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#00e5a3'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { display: false },
-                y: {
-                    min: 40,
-                    max: 160,
-                    ticks: { color: '#8e9bb0', stepSize: 40 },
-                    grid: { color: 'rgba(255,255,255,0.05)' }
-                }
-            }
-        }
-    });
-</script>
+<script src="../assests/js/app.js"></script>
 </body>
 </html>

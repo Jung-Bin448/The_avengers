@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                 // Check if user or email already exists
-                $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
+                $stmt = $pdo->prepare("SELECT 1 FROM users WHERE email = :email OR username = :username");
                 $stmt->execute(['email' => $email, 'username' => $usernameInput]);
 
                 if ($stmt->fetch()) {
@@ -203,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- JavaScript (Points to src/assests/js/app.js) -->
-    <script src="../assests/js/app.js"></script>
-
+<script src="../assests/js/app.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
