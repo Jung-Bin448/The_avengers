@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level Up Life - Login</title>
 
-    <!-- CSS -->
+    <!-- CSS (Points to src/assests/css/Style.css) -->
     <link rel="stylesheet" href="../assests/css/Style.css">
 
     <!-- Font Awesome Icons -->
@@ -81,9 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="input-group">
                 <div class="label-row">
                     <label for="email">Email</label>
-                    <a href="#" class="forgot-password">
-                        Forgot password?
-                    </a>
+                    <a href="#" class="forgot-password">Forgot password?</a>
                 </div>
 
                 <div class="input-box">
@@ -128,11 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>or continue with</span>
         </div>
 
-<!-- Social Login -->
+        <!-- Social Login Buttons -->
         <div class="social-login">
-            <!-- Google Button -->
-            <button class="social-button" id="googleButton">
-                <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+            <button class="social-button" id="googleButton" type="button">
+                <svg class="google-icon" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"/>
                     <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
                     <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.09z"/>
@@ -140,23 +137,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
             </button>
 
-            <!-- Facebook Button -->
-            <button class="social-button" id="facebookButton">
+            <button class="social-button" id="facebookButton" type="button">
                 <i class="fa-brands fa-facebook-f facebook-icon"></i>
             </button>
         </div>
 
-        <!-- Link to Sign Up Page -->
+        <!-- Navigation Link -->
         <div class="register">
             <span>Not registered yet?</span>
-            <a href="signup.php" id="signupLink">
-                Sign Up &gt;
-            </a>
+            <a href="signup.php" id="signupLink">Sign Up &gt;</a>
         </div>
 
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (Points to src/assests/js/app.js) -->
     <script src="../assests/js/app.js"></script>
 
 </body>

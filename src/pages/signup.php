@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Database configuration
+// Database configuration based on Docker setup
 $host = 'db';
 $dbname = 'level_up_life';
 $username = 'levelup';
@@ -10,16 +10,16 @@ $password = 'levelup123';
 $error = '';
 $success = '';
 
-// Handle Registration Form Submission
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user = trim($_POST['username'] ?? '');
+    $usernameInput = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $userPassword = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
-    if (!empty($user) && !empty($email) && !empty($userPassword) && !empty($confirmPassword)) {
+    if (!empty($usernameInput) && !empty($email) && !empty($userPassword) && !empty($confirmPassword)) {
         if ($userPassword !== $confirmPassword) {
-            $error = "Passwords do not match!";
+            $error = "Passwords do not match.";
         } else {
             try {
                 $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
@@ -27,18 +27,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Check if user or email already exists
                 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
-                $stmt->execute(['email' => $email, 'username' => $user]);
+                $stmt->execute(['email' => $email, 'username' => $usernameInput]);
 
                 if ($stmt->fetch()) {
-                    $error = "Username or Email is already registered.";
+                    $error = "Email or username is already registered.";
                 } else {
-                    // Hash password and insert new user
-                    $hashedPassword = password_hash($userPassword, PASSWORD_BCRYPT);
-                    $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+                    // Hash password and insert user
+                    $passwordHash = password_hash($userPassword, PASSWORD_BCRYPT);
+                    $insertStmt = $pdo->prepare("
+                        INSERT INTO users (username, email, password, current_level, total_xp, streak_count, created_at)
+                        VALUES (:username, :email, :password, 1, 0, 0, NOW())
+                    ");
                     $insertStmt->execute([
-                        'username' => $user,
+                        'username' => $usernameInput,
                         'email' => $email,
-                        'password' => $hashedPassword
+                        'password' => $passwordHash
                     ]);
 
                     $success = "Account created successfully! Redirecting to login...";
@@ -60,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level Up Life - Sign Up</title>
 
-    <!-- CSS -->
+    <!-- CSS (Points to src/assests/css/Style.css) -->
     <link rel="stylesheet" href="../assests/css/Style.css">
 
     <!-- Font Awesome Icons -->
@@ -78,15 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <h1>Sign Up</h1>
 
-        <!-- Feedback Alerts -->
+        <!-- Error Message Display -->
         <?php if (!empty($error)): ?>
             <div style="color: #ff4d4d; background-color: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; text-align: center;">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
+        <!-- Success Message Display -->
         <?php if (!empty($success)): ?>
-            <div style="color: #2ecc71; background-color: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; text-align: center;">
+            <div style="color: #00e5a3; background-color: rgba(0, 229, 163, 0.1); border: 1px solid #00e5a3; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; text-align: center;">
                 <?php echo htmlspecialchars($success); ?>
             </div>
         <?php endif; ?>
@@ -100,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="username">Username</label>
                 </div>
                 <div class="input-box">
-                    <i class="fa-regular fa-user"></i>
+                    <i class="fa-solid fa-user"></i>
                     <input 
                         type="text" 
                         id="username" 
@@ -174,33 +178,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>or continue with</span>
         </div>
 
-        <!-- Social Login -->
+        <!-- Social Login Buttons -->
         <div class="social-login">
-            <button class="social-button" id="googleButton">
-    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
-        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"/>
-        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
-        <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.09z"/>
-        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.09c.95-2.85 3.6-4.96 6.72-4.96z"/>
-    </svg>
-</button>
+            <button class="social-button" id="googleButton" type="button">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.09z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.09c.95-2.85 3.6-4.96 6.72-4.96z"/>
+                </svg>
+            </button>
 
-            <button class="social-button" id="facebookButton">
+            <button class="social-button" id="facebookButton" type="button">
                 <i class="fa-brands fa-facebook-f facebook-icon"></i>
             </button>
         </div>
 
-        <!-- Log In Link -->
+        <!-- Navigation Link -->
         <div class="register">
             <span>Already have an account?</span>
-            <a href="login.php" id="loginLink">
-                Log In&gt;
-            </a>
+            <a href="login.php" id="loginLink">Log In &gt;</a>
         </div>
 
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (Points to src/assests/js/app.js) -->
     <script src="../assests/js/app.js"></script>
 
 </body>
