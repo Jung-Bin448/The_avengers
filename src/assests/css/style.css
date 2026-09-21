@@ -1,13 +1,23 @@
-/* =========================
-GLOBAL DASHBOARD & QUEST STYLES
-========================= */
+/* =========================================================
+   1. GLOBAL & BASE STYLES
+   ========================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
     background-color: #0b1120;
     color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+/* Container for mobile-first app shell */
 .app-container {
     width: 100%;
     max-width: 414px;
@@ -16,9 +26,170 @@ body {
     background-color: #0b1120;
     padding: 20px 20px 80px 20px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Header */
+/* =========================================================
+   2. AUTHENTICATION STYLES (LOGIN & SIGNUP)
+   ========================================================= */
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-icon {
+    width: 70px;
+    height: 70px;
+    background-color: #131c31;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: #8b9bb4;
+    margin-bottom: 20px;
+}
+
+.login-container h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+form {
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.label-row label {
+    font-size: 13px;
+    color: #8b9bb4;
+}
+
+.forgot-password {
+    font-size: 12px;
+    color: #7c4dff;
+    text-decoration: none;
+}
+
+.input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-box i {
+    position: absolute;
+    left: 15px;
+    color: #8b9bb4;
+    font-size: 16px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px 15px 12px 42px;
+    background-color: #131c31;
+    border: 1px solid #1a233a;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-box input:focus {
+    border-color: #7c4dff;
+}
+
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #7c4dff, #448aff);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.divider {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #1a233a;
+    line-height: 0.1em;
+    margin: 25px 0;
+}
+
+.divider span {
+    background: #0b1120;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #8b9bb4;
+}
+
+.social-login {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.social-button {
+    flex: 1;
+    padding: 10px;
+    background-color: #131c31;
+    border: 1px solid #1a233a;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.facebook-icon {
+    font-size: 20px;
+    color: #1877f2;
+}
+
+.register {
+    font-size: 13px;
+    color: #8b9bb4;
+}
+
+.register a {
+    color: #7c4dff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+/* =========================================================
+   3. DASHBOARD STYLES
+   ========================================================= */
 .app-header {
     display: flex;
     justify-content: space-between;
@@ -40,10 +211,11 @@ body {
 .header-icon {
     font-size: 20px;
     color: #ffffff;
+    background: transparent;
+    border: none;
     cursor: pointer;
 }
 
-/* Progress Bar */
 .level-progress-container {
     margin-bottom: 20px;
 }
@@ -63,17 +235,18 @@ body {
 }
 
 .progress-bar-fill {
+    width: 72%;
     height: 100%;
     background-color: #00d2b5;
     border-radius: 10px;
 }
 
-/* Card Containers */
 .dashboard-card {
     background-color: #131c31;
     border-radius: 18px;
     padding: 16px;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .card-title {
@@ -88,7 +261,6 @@ body {
     margin-top: 2px;
 }
 
-/* Daily Quests Summary Widget */
 .daily-quests-card {
     display: flex;
     justify-content: space-between;
@@ -103,7 +275,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
 }
 
 .circular-progress-inner {
@@ -119,18 +290,11 @@ body {
     color: #00d2b5;
 }
 
-/* Stats Grid */
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 15px;
-}
-
-.stat-value {
-    font-size: 15px;
-    font-weight: bold;
-    margin-top: 8px;
 }
 
 .stat-header {
@@ -139,7 +303,38 @@ body {
     align-items: center;
 }
 
-/* Calendar Styles */
+.stat-value {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.chart-svg {
+    width: 100%;
+    height: 90px;
+    margin-top: 10px;
+    overflow: visible;
+}
+
+.fab-add {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 34px;
+    height: 34px;
+    background: #ffffff;
+    color: #0b1120;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+/* =========================================================
+   4. QUESTS & CALENDAR STYLES
+   ========================================================= */
 .calendar-header {
     display: flex;
     justify-content: space-between;
@@ -156,6 +351,14 @@ body {
     font-size: 13px;
     color: #8b9bb4;
     font-weight: normal;
+    margin-left: 6px;
+}
+
+.nav-arrows {
+    color: #8b9bb4;
+    font-size: 16px;
+    letter-spacing: 4px;
+    cursor: pointer;
 }
 
 .calendar-grid {
@@ -181,19 +384,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #d1d5db;
 }
 
 .day-number.active {
     background-color: #7c4dff;
-    color: white;
+    color: #ffffff;
 }
 
-/* Quests Page Styles */
 .quests-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 20px 0 15px;
+}
+
+.quests-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .add-quest-btn {
@@ -240,7 +451,9 @@ body {
     color: #8b9bb4;
 }
 
-/* Bottom Navigation Bar */
+/* =========================================================
+   5. BOTTOM NAVIGATION BAR
+   ========================================================= */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -265,5 +478,9 @@ body {
 }
 
 .nav-item.active {
+    color: #ffffff;
+}
+
+.nav-item.gold {
     color: #f5b041;
 }

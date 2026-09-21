@@ -5,19 +5,19 @@
 const googleButton = document.getElementById("googleButton");
 const facebookButton = document.getElementById("facebookButton");
 
-// Google Button Click
+// Google Button Click - Navigate directly to dashboard
 if (googleButton) {
     googleButton.addEventListener("click", function (e) {
         e.preventDefault();
-        alert("Google OAuth feature coming soon!");
+        window.location.href = "dashboard.php";
     });
 }
 
-// Facebook Button Click
+// Facebook Button Click - Navigate directly to dashboard
 if (facebookButton) {
     facebookButton.addEventListener("click", function (e) {
         e.preventDefault();
-        alert("Facebook OAuth feature coming soon!");
+        window.location.href = "dashboard.php";
     });
 }
 
