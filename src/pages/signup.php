@@ -1,29 +1,5 @@
 <?php
 session_start();
-
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usernameInput = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $userPassword = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
-
-    if (!empty($usernameInput) && !empty($email) && !empty($userPassword) && !empty($confirmPassword)) {
-        if ($userPassword !== $confirmPassword) {
-            $error = "Passwords do not match.";
-        } else {
-            $_SESSION['user_id'] = 1;
-            $_SESSION['username'] = $usernameInput;
-            $_SESSION['email'] = $email;
-
-            header("Location: dashboard.php");
-            exit();
-        }
-    } else {
-        $error = "Please fill in all fields.";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

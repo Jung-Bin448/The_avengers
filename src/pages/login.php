@@ -1,21 +1,5 @@
 <?php
 session_start();
-
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
-
-    if (!empty($email) && !empty($password)) {
-        $_SESSION['user_id'] = 1;
-        $_SESSION['email'] = $email;
-        header("Location: dashboard.php");
-        exit;
-    } else {
-        $error = "Please fill in all fields.";
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" class="login-form">
+        <form action="../api/login.php" method="POST" class="login-form" id="loginForm">
             
             <div class="form-group">
                 <div class="label-row">
@@ -94,6 +78,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
     </div>
+
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('../api/login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'dashboard.php';
+            } else {
+                alert(result.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Something went wrong. Please try again.');
+        }
+    });
+    </script>
 
 </body>
 </html>

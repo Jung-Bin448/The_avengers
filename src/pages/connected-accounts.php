@@ -19,11 +19,11 @@ session_start();
     <!-- Desktop Sidebar -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
-            <a href="quests.php" class="nav-link">
+            <a href="collection.php" class="nav-link">
                 <i class="fa-regular fa-folder-open"></i>
                 <span>Collection</span>
             </a>
-            <a href="dashboard.php" class="nav-link">
+            <a href="/pagedashboard.php" class="nav-link">
                 <i class="fa-solid fa-swords"></i>
                 <span>Quest</span>
             </a>

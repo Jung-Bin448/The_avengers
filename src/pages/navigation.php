@@ -8,7 +8,7 @@
         <i class="fa-regular fa-clone"></i>
         <span>Collection</span>
     </a>
-    <a href="quests.php" class="nav-item">
+    <a href="dashboard.php" class="nav-item">
         <i class="fa-solid fa-swords"></i>
         <span>Quest</span>
     </a>

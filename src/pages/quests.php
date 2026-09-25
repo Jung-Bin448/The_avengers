@@ -163,11 +163,11 @@ session_start();
 
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
+        <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
             <span>Collection</span>
         </a>
-        <a href="quests.php" class="mobile-nav-link active">
+        <a href="dashboard.php" class="mobile-nav-link active">
             <i class="fa-solid fa-swords"></i>
             <span>Quest</span>
         </a>

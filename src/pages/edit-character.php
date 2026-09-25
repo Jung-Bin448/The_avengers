@@ -1,8 +1,13 @@
 <?php
 session_start();
 
-// Default values or session values
-$characterName = $_SESSION['username'] ?? 'ShadowKnight_99';$maxLength = 20;
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$characterName = $_SESSION['username'];
+$maxLength = 20;
 $currentLength = strlen($characterName);
 ?>
 <!DOCTYPE html>
@@ -53,7 +58,7 @@ $currentLength = strlen($characterName);
         <!-- Edit Form Box -->
         <div class="edit-character-card">
             
-            <form action="" method="POST" enctype="multipart/form-data" class="edit-character-form">
+            <form class="edit-character-form" id="editCharacterForm">
                 
                 <!-- Left Input Section -->
                 <div class="character-form-left">
@@ -81,7 +86,17 @@ $currentLength = strlen($characterName);
                 <!-- Right Avatar Section -->
                 <div class="character-form-right">
                     <div class="avatar-preview-circle">
-                        <i class="fa-regular fa-user avatar-preview-icon"></i>
+                        <img
+                            id="avatarPreview"
+                            src=""
+                            alt="Profile Avatar"
+                            style="display: none;"
+                        >
+
+                        <i
+                            id="avatarPreviewFallback"
+                            class="fa-regular fa-user avatar-preview-icon">
+                        </i>
                     </div>
                     
                     <!-- Hidden file input triggered by button -->
@@ -99,7 +114,7 @@ $currentLength = strlen($characterName);
 
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
+        <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
             <span>Collection</span>
         </a>
@@ -119,176 +134,118 @@ $currentLength = strlen($characterName);
 
     <!-- Dynamic Character Counter Script -->
     <script>
-        const input = document.getElementById('characterNameInput');
-        const counter = document.getElementById('charCounter');
-        const maxLength = <?php echo $maxLength; ?>;
+    const input = document.getElementById('characterNameInput');
+    const counter = document.getElementById('charCounter');
+    const form = document.getElementById('editCharacterForm');
+    const avatarInput = document.getElementById('avatarFileInput');
 
-        input.addEventListener('input', () => {
-            counter.textContent = `${input.value.length}/${maxLength}`;
-        });
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarPreviewFallback = document.getElementById('avatarPreviewFallback');
+
+    const maxLength = <?php echo $maxLength; ?>;
+
+    async function loadCurrentAvatar() {
+        try {
+            const response = await fetch('../api/profile.php');
+            const result = await response.json();
+
+            if (!result.success) {
+                return;
+            }
+
+            const user = result.user;
+
+            if (user.avatar_path) {
+                avatarPreview.src = user.avatar_path;
+                avatarPreview.style.display = 'block';
+                avatarPreviewFallback.style.display = 'none';
+            } else {
+                avatarPreview.style.display = 'none';
+                avatarPreviewFallback.style.display = 'block';
+            }  
+
+        } catch (error) {
+            console.error("Failed to load avatar:", error);
+        }
+    }
+
+    loadCurrentAvatar();
+
+    // Character name counter
+    input.addEventListener('input', () => {
+        counter.textContent = `${input.value.length}/${maxLength}`;
+    });
+
+
+    // Character name update
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append('character_name', input.value);
+
+        try {
+            const response = await fetch('../api/update-profile.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+                window.location.href = 'profile.php';
+            } else {
+                alert(result.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Something went wrong. Please try again.');
+        }
+    });
+
+
+    // Avatar upload
+    avatarInput.addEventListener('change', async function() {
+
+        // Make sure a file was selected
+        if (!avatarInput.files.length) {
+            return;
+        }
+
+        const avatarFile = avatarInput.files[0];
+
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+
+        try {
+
+            const response = await fetch('../api/update-avatar.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+
+                // Refresh the page so the new avatar can be displayed
+                window.location.reload();
+
+            } else {
+                alert(result.message);
+            }
+
+        } catch (error) {
+
+            console.error(error);
+            alert('Something went wrong while uploading the avatar.');
+        }
+    });
     </script>
 
 </body>
 </html>
-/* ==========================================
-   9. EDIT CHARACTER NAME & AVATAR PAGE
-   ========================================== */
-.edit-character-card {
-    background-color: #131a2b;
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 28px 32px;
-    margin-top: 10px;
-}
-
-.edit-character-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
-}
-
-.character-form-left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-section-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-    display: block;
-}
-
-.input-with-counter {
-    position: relative;
-    width: 100%;
-}
-
-.input-with-counter input {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px 60px 12px 16px;
-    color: #ffffff;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.input-with-counter input:focus {
-    border-color: #3b82f6;
-}
-
-.char-counter {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 11px;
-    color: var(--text-muted);
-    pointer-events: none;
-}
-
-.edit-form-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 12px;
-    margin-top: 40px;
-}
-
-.btn-save-changes {
-    background-color: #2563eb;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-save-changes:hover {
-    background-color: #1d4ed8;
-}
-
-.btn-cancel-edit {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
-    text-decoration: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.btn-cancel-edit:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-}
-
-.character-form-right {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    width: 140px;
-}
-
-.avatar-preview-circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #d1d5db;
-    border: 3px solid #10b981;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.avatar-preview-icon {
-    font-size: 40px;
-    color: #6b7280;
-}
-
-.btn-change-avatar {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-change-avatar:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Edit Character Mobile Responsiveness */
-@media (max-width: 768px) {
-    .edit-character-form {
-        flex-direction: column-reverse;
-        align-items: center;
-        gap: 24px;
-    }
-
-    .character-form-left {
-        width: 100%;
-    }
-
-    .edit-form-actions {
-        justify-content: center;
-        margin-top: 24px;
-    }
-}

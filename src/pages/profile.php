@@ -1,11 +1,12 @@
 <?php
 session_start();
 
-// Fallback values for profile
-$username = $_SESSION['username'] ?? 'Alex';
-$userTitle = "Level 5 Adventurer";
-$bio = "Grinding code and conquering bugs ⚡";
-$levelProgress = 72; // Percentage
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$username = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,23 +59,41 @@ $levelProgress = 72; // Percentage
                 <!-- Avatar and Username Column -->
                 <div class="profile-avatar-column">
                     <div class="profile-avatar-circle">
-                        <i class="fa-regular fa-user avatar-fallback-icon"></i>
+                        <img
+                            id="profileAvatar"
+                            src=""
+                            alt="Profile Avatar"
+                            style="display: none;"
+                        >
+
+                        <i
+                            id="avatarFallback"
+                            class="fa-regular fa-user avatar-fallback-icon">
+                        </i>
                     </div>
                     <h2 class="profile-username"><?php echo htmlspecialchars($username); ?></h2>
-                    <button class="edit-profile-btn" type="button">Edit profile</button>
+                    <a href="edit-character.php" class="edit-profile-btn">
+                        Edit profile
+                    </a>
                 </div>
 
                 <!-- Info, Level Bar & Bio Column -->
                 <div class="profile-info-column">
                     <div class="profile-level-section">
-                        <span class="profile-level-title"><?php echo htmlspecialchars($userTitle); ?></span>
+                        <span class="profile-level-title">
+                            Level <span id="userLevel">1</span> Adventurer
+                        </span>
                         <div class="progress-bar-bg profile-progress-bg">
-                            <div class="progress-bar-fill profile-progress-fill" style="width: <?php echo $levelProgress; ?>%;"></div>
+                            <div
+                                class="progress-bar-fill profile-progress-fill"
+                                id="profileProgressBar"
+                                style="width: 0%;">
+                            </div>
                         </div>
                     </div>
 
                     <div class="profile-bio-box">
-                        <p><?php echo htmlspecialchars($bio); ?></p>
+                        <p id="profileBio">Grinding code and conquering bugs ⚡</p>
                     </div>
                 </div>
             </div>
@@ -105,7 +124,7 @@ $levelProgress = 72; // Percentage
 
     <!-- Sticky Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
+        <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
             <span>Collection</span>
         </a>
@@ -122,6 +141,53 @@ $levelProgress = 72; // Percentage
             <span>Profile</span>
         </a>
     </nav>
+
+    <script>
+    async function loadProfile() {
+        try {
+            const response = await fetch('../api/profile.php');
+            const result = await response.json();
+
+            if (!result.success) {
+                console.error(result.message);
+                return;
+            }
+
+            const user = result.user;
+
+            console.log("Profile user:", user);
+
+            // Update avatar
+            const avatar = document.getElementById('profileAvatar');
+            const avatarFallback = document.getElementById('avatarFallback');
+
+            if (user.avatar_path) {
+                avatar.src = user.avatar_path;
+                avatar.style.display = 'block';
+                avatarFallback.style.display = 'none';
+            } else {
+            avatar.style.display = 'none';
+                avatarFallback.style.display = 'block';
+            }
+
+            // Update level
+            document.getElementById('userLevel').textContent = user.level;
+
+            // Calculate XP progress
+            const xp = Number(user.xp);
+            const progressPercent = xp % 100;
+
+            // Update progress bar
+            document.getElementById('profileProgressBar').style.width =
+            progressPercent + '%';
+
+        } catch (error) {
+            console.error("Failed to load profile:", error);
+        }
+    }
+
+    loadProfile();
+    </script>
 
 </body>
 </html>

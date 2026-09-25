@@ -1,10 +1,12 @@
 <?php
 session_start();
 
-// Mock session data fallback for display
-$username = $_SESSION['username'] ?? 'Alex';
-$level = 5;
-$progressPercent = 72;
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$username = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,17 +55,17 @@ $progressPercent = 72;
         <header class="dashboard-header">
             <div class="user-welcome">
                 <h1>Hi, <?php echo htmlspecialchars($username); ?>!</h1>
-                <p>Level <?php echo $level; ?> Adventurer</p>
+                <p>Level <span id="userLevel">1<span> Adventurer</p>
             </div>
 
             <div style="display: flex; align-items: center; gap: 20px;">
                 <div class="level-progress-container">
                     <div class="level-progress-text">
                         <span>Level Progress:</span>
-                        <span><?php echo $progressPercent; ?>%</span>
+                        <span><span id="progressPercentage">0<span>%</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: <?php echo $progressPercent; ?>%;"></div>
+                        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
                     </div>
                 </div>
 
@@ -139,7 +141,7 @@ $progressPercent = 72;
 
     <!-- Sticky Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
+        <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
             <span>Collection</span>
         </a>
@@ -159,57 +161,33 @@ $progressPercent = 72;
 
     <!-- Chart Setup Script -->
     <script>
-        const ctx = document.getElementById('xpChart').getContext('2d');
-        
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [
-                    {
-                        label: 'Skill XP',
-                        data: [70, 115, 145, 115, 80, 40, 50],
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'transparent',
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointBackgroundColor: '#8b5cf6',
-                        pointRadius: 4
-                    },
-                    {
-                        label: 'Total XP',
-                        data: [40, 45, 80, 100, 145, 115, 60],
-                        borderColor: '#10b981',
-                        backgroundColor: 'transparent',
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointBackgroundColor: '#10b981',
-                        pointRadius: 4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: { display: false },
-                    y: {
-                        min: 0,
-                        max: 160,
-                        ticks: {
-                            stepSize: 40,
-                            color: '#64748b',
-                            font: { size: 11 }
-                        },
-                        grid: { display: false },
-                        border: { display: false }
-                    }
-                }
+    async function loadDashboard() {
+        try {
+            const response = await fetch('../api/dashboard.php');
+            const result = await response.json();
+
+            if (!result.success) {
+                console.error(result.message);
+                return;
             }
-        });
+
+            const user = result.user;
+
+            console.log("Dashboard user:", user);
+            document.getElementById('userLevel').textContent = user.level;
+
+            const xp = Number(user.xp);
+            const progressPercent = xp % 100;
+            document.getElementById('progressPercent').textContent = progressPercent;
+            document.getElementById('progressBarFill').style.width =
+            progressPercent + '%';
+
+        } catch (error) {
+            console.error("Failed to load dashboard:", error);
+        }
+    }
+
+    loadDashboard();
     </script>
 </body>
 </html>

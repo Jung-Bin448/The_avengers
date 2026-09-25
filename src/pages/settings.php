@@ -58,12 +58,12 @@ session_start();
                     <h2 class="settings-card-title">Account</h2>
                     <ul class="settings-list">
                         <li>
-                            <a href="profile.php" class="settings-item">
+                            <a href="edit-character.php" class="settings-item">
                                 <div class="settings-item-left">
                                     <i class="fa-solid fa-user-gear"></i>
                                     <span>Edit Character Name & Avatar</span>
                                 </div>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </a>
                         </li>
                         <li>
@@ -166,7 +166,7 @@ session_start();
 
     <!-- Sticky Bottom Navigation Bar (Visible on Mobile Devices) -->
     <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
+        <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
             <span>Collection</span>
         </a>

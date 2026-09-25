@@ -70,7 +70,7 @@ try {
 
     // Login successful
     $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['user_name'] = $user['username'];
+    $_SESSION['username'] = $user['username'];
     $_SESSION['email'] = $user['email'];
 
     http_response_code(200);
