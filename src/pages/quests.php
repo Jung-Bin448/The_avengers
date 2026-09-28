@@ -7,7 +7,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quests - Level Up Life</title>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="../assests/css/Style.css">
@@ -102,7 +102,6 @@ session_start();
                 <div class="cal-date-cell">30</div>
                 <div class="cal-date-cell">31</div>
                 <div class="cal-date-cell"></div>
-                <div class="cal-date-cell"></div>
             </div>
         </section>
 
@@ -114,7 +113,7 @@ session_start();
             </div>
 
             <div class="quest-list">
-                
+
                 <!-- Main Quest -->
                 <div class="quest-item">
                     <div class="quest-type-tag">
@@ -153,10 +152,10 @@ session_start();
 
             </div>
 
-            <!-- Floating Add Button -->
-            <button class="fab-btn" type="button">
+            <!-- Floating Add Button Linked to create-quest.php -->
+            <a href="create-quest.php" class="fab-btn">
                 <i class="fa-solid fa-plus"></i>
-            </button>
+            </a>
         </section>
 
     </main>

@@ -1,5 +1,21 @@
 <?php
 session_start();
+
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if (!empty($email) && !empty($password)) {
+        $_SESSION['user_id'] = 1;
+        $_SESSION['email'] = $email;
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        $error = "Please fill in all fields.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +40,11 @@ session_start();
             <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
+<<<<<<< HEAD
         <form action="../api/login.php" method="POST" class="login-form" id="loginForm">
+=======
+        <form action="login.php" method="POST" class="login-form">
+>>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
             
             <div class="form-group">
                 <div class="label-row">
@@ -79,6 +99,7 @@ session_start();
 
     </div>
 
+<<<<<<< HEAD
     <script>
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -108,5 +129,7 @@ session_start();
     });
     </script>
 
+=======
+>>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
 </body>
 </html>

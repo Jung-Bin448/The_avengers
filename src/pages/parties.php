@@ -32,7 +32,7 @@ $skillPoints = 5;
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assets/css/Style.css">
+    <link rel="stylesheet" href="../assests/css/Style.css">
 </head>
 <body class="dashboard-layout">
 

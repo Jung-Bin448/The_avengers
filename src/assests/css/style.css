@@ -1772,167 +1772,391 @@ body.dashboard-layout {
         grid-template-columns: 1fr;
     }
 }
+/* ==========================================================================
+   SUB-SETTINGS COMMON & UI COMPONENT STYLES
+   ========================================================================== */
 
-
-/* ==========================================
-   9. EDIT CHARACTER NAME & AVATAR PAGE
-   ========================================== */
-.edit-character-card {
-    background-color: #131a2b;
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 28px 32px;
-    margin-top: 10px;
+.settings-sub-header {
+    margin-bottom: 30px;
 }
 
-.edit-character-form {
+.back-link {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
+    align-items: center;
+    gap: 12px;
 }
 
-.character-form-left {
-    flex: 1;
+.settings-sub-container {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+    max-width: 850px;
 }
 
-.input-section-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-    display: block;
+.settings-sub-container.centered {
+    align-items: center;
+    padding-top: 20px;
 }
 
-.input-with-counter {
-    position: relative;
-    width: 100%;
+/* Common Setting Item Pill/Row */
+.setting-row-box {
+    background-color: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.input-with-counter input {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px 60px 12px 16px;
+.setting-row-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
     color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.setting-icon {
+    font-size: 18px;
+    color: #94a3b8;
+}
+
+/* Range Input / Sliders */
+.slider-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 55%;
+}
+
+.custom-range {
+    flex: 1;
+    accent-color: #a855f7;
+    height: 6px;
+    background: #1e293b;
+    border-radius: 4px;
+    outline: none;
+}
+
+.range-val {
+    color: #64748b;
+    font-size: 13px;
+    min-width: 35px;
+    text-align: right;
+}
+
+/* Toggle Switches */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #334155;
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #6366f1;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Radio Cards (Dark Theme Intensity) */
+.radio-option-card {
+    background-color: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.radio-option-card.active,
+.radio-option-card:hover {
+    border-color: #6366f1;
+}
+
+.radio-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.radio-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.radio-desc {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.radio-option-card input[type="radio"] {
+    display: none;
+}
+
+.radio-circle {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #64748b;
+    border-radius: 50%;
+    position: relative;
+}
+
+.radio-option-card input[type="radio"]:checked + .radio-circle {
+    border-color: #6366f1;
+    background-color: #6366f1;
+    box-shadow: inset 0 0 0 3px #111827;
+}
+
+/* Language & Realm Helpers */
+.section-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.green {
+    color: #10b981;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Reset Warning Card & Button */
+.warning-alert-box {
+    background-color: #7f1d1d;
+    border: 1px solid #991b1b;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    color: #ffffff;
+    max-width: 750px;
+}
+
+.warning-icon {
+    font-size: 40px;
+    color: #000000;
+}
+
+.warning-alert-box p {
     font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.btn-danger-reset {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.btn-danger-reset:hover {
+    background-color: #dc2626;
+}
+/* ==========================================================================
+   CREATE NEW QUEST FORM STYLES
+   ========================================================================== */
+
+.quest-create-container {
+    max-width: 850px;
+}
+
+.create-quest-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Inputs & Textareas */
+.form-input, 
+.form-textarea {
+    width: 100%;
+    background-color: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #ffffff;
+    font-size: 15px;
     outline: none;
     transition: border-color 0.2s ease;
 }
 
-.input-with-counter input:focus {
-    border-color: #3b82f6;
+.form-input::placeholder, 
+.form-textarea::placeholder {
+    color: #475569;
 }
 
-.char-counter {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 11px;
-    color: var(--text-muted);
-    pointer-events: none;
+.form-input:focus, 
+.form-textarea:focus {
+    border-color: #6366f1;
 }
 
-.edit-form-actions {
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.margin-top-lg {
+    margin-top: 15px;
+}
+
+/* Quest Type Selection Pills */
+.quest-types-grid {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     gap: 12px;
-    margin-top: 40px;
+    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-.btn-save-changes {
-    background-color: #2563eb;
+.type-pill {
+    background-color: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.type-pill input[type="radio"] {
+    display: none;
+}
+
+.type-pill .type-icon {
+    font-size: 16px;
+}
+
+/* Active Purple State for Pill */
+.type-pill.active,
+.type-pill:has(input[type="radio"]:checked) {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    color: #ffffff;
+}
+
+.type-pill.add-type-btn {
+    border-style: dashed;
+    background-color: transparent;
+    color: #64748b;
+}
+
+.type-pill.add-type-btn:hover {
+    border-color: #475569;
+    color: #94a3b8;
+}
+
+/* Start Date & Deadline Box */
+.date-picker-box {
+    background-color: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    width: auto;
+}
+
+.date-divider {
+    width: 1px;
+    height: 20px;
+    background-color: #1e293b;
+}
+
+.date-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.date-text.danger-text {
+    color: #ef4444;
+}
+
+/* Submit Action Button */
+.form-actions.centered {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-primary-purple {
+    background-color: #5850ec;
     color: #ffffff;
     border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 12px;
+    padding: 16px 48px;
+    font-size: 16px;
     font-weight: 600;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.btn-save-changes:hover {
-    background-color: #1d4ed8;
+.btn-primary-purple:hover {
+    background-color: #4f46e5;
 }
 
-.btn-cancel-edit {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
-    text-decoration: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.btn-cancel-edit:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-}
-
-.character-form-right {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    width: 140px;
-}
-
-.avatar-preview-circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #d1d5db;
-    border: 3px solid #10b981;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.avatar-preview-icon {
-    font-size: 40px;
-    color: #6b7280;
-}
-
-.btn-change-avatar {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-change-avatar:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Edit Character Mobile Responsiveness */
-@media (max-width: 768px) {
-    .edit-character-form {
-        flex-direction: column-reverse;
-        align-items: center;
-        gap: 24px;
-    }
-
-    .character-form-left {
-        width: 100%;
-    }
-
-    .edit-form-actions {
-        justify-content: center;
-        margin-top: 24px;
-    }
+.btn-primary-purple:active {
+    transform: scale(0.98);
 }

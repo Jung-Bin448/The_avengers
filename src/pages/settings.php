@@ -12,7 +12,7 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="../assests/css/Style.css">
+    <link rel="stylesheet" href="../assests/css/style.css">
 </head>
 <body class="dashboard-layout">
 
@@ -31,7 +31,7 @@ session_start();
                 <i class="fa-solid fa-users"></i>
                 <span>Party</span>
             </a>
-            <a href="profile.php" class="nav-link active">
+            <a href="profile.php" class="nav-link">
                 <i class="fa-regular fa-user"></i>
                 <span>Profile</span>
             </a>
@@ -92,7 +92,7 @@ session_start();
                     <h2 class="settings-card-title">Danger Zone</h2>
                     <ul class="settings-list">
                         <li>
-                            <a href="delete-account.php" class="settings-item text-danger">
+                            <a href="reset-character.php" class="settings-item text-danger">
                                 <div class="settings-item-left">
                                     <i class="fa-solid fa-triangle-exclamation"></i>
                                     <span>Reset Character Progress</span>
@@ -113,7 +113,7 @@ session_start();
                     <h2 class="settings-card-title">Preferences</h2>
                     <ul class="settings-list">
                         <li>
-                            <a href="#" class="settings-item">
+                            <a href="sound-settings.php" class="settings-item">
                                 <div class="settings-item-left">
                                     <i class="fa-solid fa-music"></i>
                                     <span>Sound Effects & Quest Audio</span>
@@ -122,7 +122,7 @@ session_start();
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="settings-item">
+                            <a href="notifications.php" class="settings-item">
                                 <div class="settings-item-left">
                                     <i class="fa-regular fa-bell"></i>
                                     <span>Boss Reminders & Push Notifications</span>
@@ -138,7 +138,7 @@ session_start();
                     <h2 class="settings-card-title">System</h2>
                     <ul class="settings-list">
                         <li>
-                            <a href="#" class="settings-item">
+                            <a href="theme-intensity.php" class="settings-item">
                                 <div class="settings-item-left">
                                     <i class="fa-solid fa-moon"></i>
                                     <span>Dark Theme Intensity</span>
@@ -147,7 +147,7 @@ session_start();
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="settings-item">
+                            <a href="language-realm.php" class="settings-item">
                                 <div class="settings-item-left">
                                     <i class="fa-solid fa-globe"></i>
                                     <span>Language / Realm</span>
@@ -164,7 +164,7 @@ session_start();
 
     </main>
 
-    <!-- Sticky Bottom Navigation Bar (Visible on Mobile Devices) -->
+    <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
         <a href="collection.php" class="mobile-nav-link">
             <i class="fa-regular fa-folder-open"></i>
@@ -178,17 +178,10 @@ session_start();
             <i class="fa-solid fa-users"></i>
             <span>Party</span>
         </a>
-        <a href="profile.php" class="mobile-nav-link active">
+        <a href="profile.php" class="mobile-nav-link">
             <i class="fa-regular fa-user"></i>
             <span>Profile</span>
         </a>
-        <a href="edit-character.php" class="settings-item">
-    <div class="settings-item-left">
-        <i class="fa-solid fa-user-gear"></i>
-        <span>Edit Character Name & Avatar</span>
-    </div>
-    <i class="fa-solid fa-chevron-right arrow-icon"></i>
-</a>
     </nav>
 
 </body>
