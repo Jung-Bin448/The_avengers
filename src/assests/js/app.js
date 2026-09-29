@@ -25,12 +25,24 @@ if (facebookButton) {
 // NAVIGATION & INTERACTIVE UI
 // ==========================================
 
-document.addEventListener("DOMContentLoaded", function () {
-    const navItems = document.querySelectorAll(".nav-item");
-    navItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            navItems.forEach((nav) => nav.classList.remove("active"));
-            this.classList.add("active");
-        });
+document.addEventListener('DOMContentLoaded', () => {
+  // Handle Login form redirection
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Redirect directly to dashboard upon submit
+      window.location.href = 'dashboard.php';
     });
+  }
+
+  // Handle Signup form redirection
+  const signupForm = document.getElementById('signup-form');
+  if (signupForm) {
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Redirect to login or dashboard
+      window.location.href = 'login.php';
+    });
+  }
 });

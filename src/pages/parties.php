@@ -1,235 +1,246 @@
 <?php
-session_start();
+// src/pages/parties.php
 
-// User session data
-$userName = $_SESSION['username'] ?? 'Alex';
-$userTitle = "Level 5 Adventurer";
-$levelProgress = 72; // %
-
-// Daily Quest stats
-$completedQuests = 2;
-$totalQuests = 5;
-$questPercent = round(($completedQuests / $totalQuests) * 100);
-
-// Metric stats
-$energyCurrent = 100;
-$energyMax = 100;
-$goldCount = "1,240";
-$streakDays = 7;
-$skillPoints = 5;
+$chats = [
+    [
+        'id' => 1,
+        'name' => 'Guild Raid Squad',
+        'sub' => '4 members online',
+        'time' => '8:06',
+        'active' => true,
+        'online' => true
+    ],
+    [
+        'id' => 2,
+        'name' => 'Alchemist Party',
+        'sub' => '',
+        'time' => 'Yesterday',
+        'active' => false,
+        'online' => false
+    ],
+    [
+        'id' => 3,
+        'name' => 'Tank & Healer Main',
+        'sub' => '6 members online',
+        'time' => 'Sunday',
+        'active' => false,
+        'online' => true
+    ],
+    [
+        'id' => 4,
+        'name' => 'Dragon Slayers Club',
+        'sub' => '',
+        'time' => 'Thursday',
+        'active' => false,
+        'online' => false
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Party - Level Up Life</title>
+    <title>Direct Messages & Parties</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- Chart.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        body {
+            background-color: #0b0e14;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            padding: 30px;
+        }
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assests/css/Style.css">
+        .messaging-container {
+            display: flex;
+            width: 100%;
+            background-color: #121721;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .chat-sidebar {
+            width: 320px;
+            background-color: #161b22;
+            padding: 20px;
+            border-right: 1px solid #21262d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .add-btn {
+            background-color: transparent;
+            border: 1px solid #30363d;
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background-color: #21262d;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 10px 10px 35px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b949e;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chat-item:hover,
+        .chat-item.active {
+            background-color: #21262d;
+        }
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2e3545;
+            position: relative;
+        }
+
+        .avatar.online::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background-color: #2ea043;
+            border-radius: 50%;
+            border: 2px solid #161b22;
+        }
+
+        .chat-info .chat-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chat-info .chat-sub {
+            font-size: 12px;
+            color: #2ea043;
+            margin-top: 2px;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .chat-content {
+            flex: 1;
+            background-color: #121721;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b949e;
+        }
+    </style>
 </head>
-<body class="dashboard-layout">
+<body>
 
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <a href="collection.php" class="nav-link">
-                <i class="fa-regular fa-folder"></i>
-                <span>Collection</span>
-            </a>
-            <a href="dashboard.php" class="nav-link">
-                <i class="fa-solid fa-swords"></i>
-                <span>Quest</span>
-            </a>
-            <a href="party.php" class="nav-link active">
-                <i class="fa-solid fa-users"></i>
-                <span>Party</span>
-            </a>
-            <a href="profile.php" class="nav-link">
-                <i class="fa-regular fa-user"></i>
-                <span>Profile</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="dashboard-main">
-
-        <!-- Top Header -->
-        <header class="quest-welcome-header">
-            <div class="user-info-group">
-                <h1>Hi, <?php echo htmlspecialchars($userName); ?>!</h1>
-                <p class="subtitle"><?php echo htmlspecialchars($userTitle); ?></p>
+    <div class="messaging-container">
+        <div class="chat-sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Direct Messages</span>
+                <button class="add-btn" type="button"><i class="fas fa-plus"></i></button>
             </div>
-
-            <div class="header-right-group">
-                <div class="level-bar-container">
-                    <div class="level-text-row">
-                        <span>Level Progress: <?php echo $levelProgress; ?>%</span>
-                    </div>
-                    <div class="progress-bar-bg quest-progress-bg">
-                        <div class="progress-bar-fill" style="width: <?php echo $levelProgress; ?>%;"></div>
-                    </div>
-                </div>
-                <button class="icon-bell-btn" type="button" aria-label="Notifications">
-                    <i class="fa-regular fa-bell"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Dashboard Content Stack -->
-        <div class="dashboard-content-stack">
             
-            <!-- Daily Quests Card -->
-            <div class="dashboard-card daily-quests-card">
-                <div class="daily-quests-left">
-                    <h2>Daily Quests</h2>
-                    <p class="quest-count"><?php echo "$completedQuests of $totalQuests Completed"; ?></p>
-                </div>
-                <div class="circular-progress" style="--percent: <?php echo $questPercent; ?>;">
-                    <span><?php echo $questPercent; ?>%</span>
-                </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search">
             </div>
 
-            <!-- Stats Grid Row (Energy, Gold, Streak, Skill Points) -->
-            <div class="stats-cards-grid">
-                
-                <div class="dashboard-card stat-card-box">
-                    <div class="stat-icon-wrapper energy-icon">
-                        <i class="fa-solid fa-bolt"></i>
-                    </div>
-                    <h3 class="stat-card-title">Energy</h3>
-                    <p class="stat-card-value"><?php echo "$energyCurrent / $energyMax"; ?></p>
-                </div>
-
-                <div class="dashboard-card stat-card-box">
-                    <div class="stat-icon-wrapper gold-icon">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
-                    <h3 class="stat-card-title">Gold</h3>
-                    <p class="stat-card-value"><?php echo htmlspecialchars($goldCount); ?></p>
-                </div>
-
-                <div class="dashboard-card stat-card-box">
-                    <div class="stat-icon-wrapper streak-icon">
-                        <i class="fa-solid fa-meteor"></i>
-                    </div>
-                    <h3 class="stat-card-title">Streak</h3>
-                    <p class="stat-card-value"><?php echo "$streakDays Days"; ?></p>
-                </div>
-
-                <div class="dashboard-card stat-card-box">
-                    <div class="stat-icon-wrapper skill-icon">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <h3 class="stat-card-title">Skill Points</h3>
-                    <p class="stat-card-value"><?php echo "$skillPoints Available"; ?></p>
-                </div>
-
+            <div class="chat-list">
+                <?php foreach ($chats as $chat): ?>
+                    <a href="parties.php?chat_id=<?php echo (int)$chat['id']; ?>" class="chat-item <?php echo $chat['active'] ? 'active' : ''; ?>">
+                        <div class="avatar-section">
+                            <div class="avatar <?php echo $chat['online'] ? 'online' : ''; ?>"></div>
+                            <div class="chat-info">
+                                <div class="chat-name"><?php echo htmlspecialchars($chat['name']); ?></div>
+                                <?php if (!empty($chat['sub'])): ?>
+                                    <div class="chat-sub"><?php echo htmlspecialchars($chat['sub']); ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="chat-time"><?php echo htmlspecialchars($chat['time']); ?></div>
+                    </a>
+                <?php endforeach; ?>
             </div>
-
-            <!-- XP Graph Card -->
-            <div class="dashboard-card chart-card">
-                <div class="chart-header">
-                    <div>
-                        <h3>Skill Mastery / XP History</h3>
-                        <p class="chart-avg">Avg: 450 XP/day</p>
-                    </div>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="xpChart"></canvas>
-                    <button class="fab-add-btn" type="button" aria-label="Add XP">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-
         </div>
 
-    </main>
-
-    <!-- Mobile Bottom Navigation -->
-    <nav class="mobile-bottom-nav">
-        <a href="collection.php" class="mobile-nav-link">
-            <i class="fa-regular fa-folder"></i>
-            <span>Collection</span>
-        </a>
-        <a href="dashboard.php" class="mobile-nav-link">
-            <i class="fa-solid fa-swords"></i>
-            <span>Quest</span>
-        </a>
-        <a href="party.php" class="mobile-nav-link active">
-            <i class="fa-solid fa-users"></i>
-            <span>Party</span>
-        </a>
-        <a href="profile.php" class="mobile-nav-link">
-            <i class="fa-regular fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </nav>
-
-    <!-- Chart Configuration Script -->
-    <script>
-        const ctx = document.getElementById('xpChart').getContext('2d');
-        
-        const purpleGrad = ctx.createLinearGradient(0, 0, 0, 200);
-        purpleGrad.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
-        purpleGrad.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
-
-        const greenGrad = ctx.createLinearGradient(0, 0, 0, 200);
-        greenGrad.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
-        greenGrad.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['', '', '', '', '', '', ''],
-                datasets: [
-                    {
-                        data: [75, 120, 150, 120, 80, 45, 60],
-                        borderColor: '#a855f7',
-                        borderWidth: 2,
-                        tension: 0.45,
-                        pointBackgroundColor: '#a855f7',
-                        pointRadius: 4,
-                        fill: true,
-                        backgroundColor: purpleGrad
-                    },
-                    {
-                        data: [45, 50, 80, 105, 155, 120, 70],
-                        borderColor: '#10b981',
-                        borderWidth: 2,
-                        tension: 0.45,
-                        pointBackgroundColor: '#10b981',
-                        pointRadius: 4,
-                        fill: true,
-                        backgroundColor: greenGrad
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, border: { display: false } },
-                    y: {
-                        min: 0,
-                        max: 160,
-                        ticks: { stepSize: 40, color: '#94a3b8', font: { size: 12 } },
-                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
-                        border: { display: false }
-                    }
-                }
-            }
-        });
-    </script>
+        <div class="chat-content">
+            <p>Select a chat to start messaging</p>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -5,13 +5,15 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (!empty($email) && !empty($password)) {
+        // Authenticate user logic here
         $_SESSION['user_id'] = 1;
         $_SESSION['email'] = $email;
+
         header("Location: dashboard.php");
-        exit;
+        exit();
     } else {
         $error = "Please fill in all fields.";
     }
@@ -20,116 +22,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="../assests/css/Style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="login-page-body">
+<body class="auth-body">
 
-    <div class="login-card">
-        
-        <div class="profile-avatar-gradient">
-            <i class="fa-regular fa-user"></i>
-        </div>
-
-        <h1 class="login-title">Login</h1>
-
-        <?php if (!empty($error)): ?>
-            <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
-        <?php endif; ?>
-
-<<<<<<< HEAD
-        <form action="../api/login.php" method="POST" class="login-form" id="loginForm">
-=======
-        <form action="login.php" method="POST" class="login-form">
->>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
-            
-            <div class="form-group">
-                <div class="label-row">
-                    <label for="email">Email</label>
-                    <a href="forgot-password.php" class="forgot-link">Forgot password?</a>
-                </div>
-                <div class="input-wrapper">
-                    <i class="fa-regular fa-envelope input-icon"></i>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="label-row">
-                    <label for="password">Password</label>
-                </div>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-gradient-submit">Log In</button>
-
-        </form>
-
-        <div class="divider-container">
-            <span class="divider-line"></span>
-            <span class="divider-text">or continue with</span>
-            <span class="divider-line"></span>
-        </div>
-
-        <div class="social-login-group">
-            <button type="button" class="social-circle-btn" onclick="window.location.href='dashboard.php'">
-                <svg class="google-icon-svg" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"/>
-                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
-                    <path fill="#FBBC05" d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.09z"/>
-                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.09c.95-2.85 3.6-4.96 6.72-4.96z"/>
-                </svg>
-            </button>
-            <button type="button" class="social-circle-btn" onclick="window.location.href='dashboard.php'">
-                <i class="fa-brands fa-facebook-f facebook-icon"></i>
-            </button>
-
-        </div>
-
-        <div class="signup-footer">
-            <span>Not register yet?</span>
-            <a href="signup.php" class="signup-link">Sign Up &gt;</a>
-        </div>
-
+  <div class="auth-card">
+    <!-- Gradient Avatar Icon -->
+    <div class="avatar-gradient-badge">
+      <svg class="avatar-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
     </div>
 
-<<<<<<< HEAD
-    <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+    <h1 class="auth-title">Login</h1>
 
-        const form = event.target;
-        const formData = new FormData(form);
+    <!-- Form -->
+    <form class="auth-form" action="#" method="POST">
+      <div class="form-group">
+        <div class="label-row">
+          <label for="email">Email</label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+      </div>
 
-        try {
-            const response = await fetch('../api/login.php', {
-                method: 'POST',
-                body: formData
-            });
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+      </div>
 
-            const result = await response.json();
+      <button type="submit" class="btn-gradient-submit">Log In</button>
+    </form>
 
-            if (result.success) {
-                alert(result.message);
-                window.location.href = 'dashboard.php';
-            } else {
-                alert(result.message);
-            }
+    <!-- Divider -->
+    <div class="divider-container">
+      <div class="divider-line"></div>
+      <span class="divider-text">or continue with</span>
+      <div class="divider-line"></div>
+    </div>
 
-        } catch (error) {
-            console.error(error);
-            alert('Something went wrong. Please try again.');
-        }
-    });
-    </script>
+    <!-- Social Buttons -->
+    <div class="social-login-group">
+      <button class="social-btn" type="button" aria-label="Google Login">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+      </button>
 
-=======
->>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
+      <button class="social-btn" type="button" aria-label="Facebook Login">
+        <svg class="facebook-icon" viewBox="0 0 24 24" fill="#1877F2">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Footer link -->
+    <div class="auth-footer">
+      <span>Not register yet?</span>
+      <a href="signup.php">Sign Up&gt;</a>
+    </div>
+  </div>
+
 </body>
 </html>
