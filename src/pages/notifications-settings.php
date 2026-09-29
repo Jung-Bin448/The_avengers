@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language / Realm - The Avengers</title>
+    <title>Boss Reminders & Push Notifications - The Avengers</title>
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
 <body class="dashboard-page-body">
@@ -59,36 +59,60 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="main-content language-realm-main-content">
+    <main class="main-content notifications-settings-main-content">
         <!-- Back Navigation Header -->
-        <div class="language-page-header">
-            <a href="settings.php" class="language-back-link">&lsaquo; Language / Realm</a>
+        <div class="notifications-page-header">
+            <a href="settings.php" class="notifications-back-link">&lsaquo; Boss Reminders & Push Notifications</a>
         </div>
 
-        <!-- Language & Realm Content Box Wrapper -->
-        <div class="language-content-wrapper">
-            <!-- Game Language Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">GAME LANGUAGE</span>
-                <div class="language-row-item">
-                    <div class="language-label-group">
-                        <span class="language-icon">🌐</span>
-                        <span class="language-title">English (US)</span>
-                    </div>
-                    <span class="language-arrow">&rsaquo;</span>
+        <!-- Notifications Settings Box Wrapper -->
+        <div class="notifications-content-wrapper">
+            <!-- Boss Raid Alerts Row (Active/Checked) -->
+            <div class="notification-row-item">
+                <div class="notification-label-group">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-title">Boss Raid Alerts</span>
                 </div>
+                <label class="notification-switch">
+                    <input type="checkbox" checked>
+                    <span class="switch-slider"></span>
+                </label>
             </div>
 
-            <!-- Server Realm Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">SERVER REALM</span>
-                <div class="language-row-item realm-row">
-                    <div class="language-label-group">
-                        <span class="language-icon">🏰</span>
-                        <span class="language-title">North America (NA-East)</span>
-                    </div>
-                    <span class="realm-latency-badge">Low Latency (32ms)</span>
+            <!-- Daily Quest Resets Row (Inactive/Unchecked) -->
+            <div class="notification-row-item">
+                <div class="notification-label-group">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-title">Daily Quest Resets</span>
                 </div>
+                <label class="notification-switch">
+                    <input type="checkbox">
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+
+            <!-- Party Invites & Messages Row (Active/Checked) -->
+            <div class="notification-row-item">
+                <div class="notification-label-group">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-title">Party Invites & Messages</span>
+                </div>
+                <label class="notification-switch">
+                    <input type="checkbox" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+
+            <!-- Streak Saver Warning Row (Inactive/Unchecked) -->
+            <div class="notification-row-item">
+                <div class="notification-label-group">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-title">Streak Saver Warning</span>
+                </div>
+                <label class="notification-switch">
+                    <input type="checkbox">
+                    <span class="switch-slider"></span>
+                </label>
             </div>
         </div>
     </main>

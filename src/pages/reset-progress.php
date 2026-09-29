@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language / Realm - The Avengers</title>
+    <title>Reset Character Progress - The Avengers</title>
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
 <body class="dashboard-page-body">
@@ -59,36 +59,30 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="main-content language-realm-main-content">
-        <!-- Back Navigation Header -->
-        <div class="language-page-header">
-            <a href="settings.php" class="language-back-link">&lsaquo; Language / Realm</a>
+    <main class="main-content reset-progress-main-content">
+        <!-- Back Header Title / Navigation -->
+        <div class="reset-page-header">
+            <a href="settings.php" class="reset-back-link">&lsaquo; Reset Character Progress</a>
         </div>
 
-        <!-- Language & Realm Content Box Wrapper -->
-        <div class="language-content-wrapper">
-            <!-- Game Language Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">GAME LANGUAGE</span>
-                <div class="language-row-item">
-                    <div class="language-label-group">
-                        <span class="language-icon">🌐</span>
-                        <span class="language-title">English (US)</span>
-                    </div>
-                    <span class="language-arrow">&rsaquo;</span>
+        <!-- Warning Card Container -->
+        <div class="reset-content-wrapper">
+            <div class="reset-warning-banner">
+                <div class="warning-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warning-svg">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="warning-text-content">
+                    <p><strong>Warning:</strong> Resetting your character will clear all level progression, skill points, and quest history. Your character will return to Level 1. This action cannot be undone.</p>
                 </div>
             </div>
 
-            <!-- Server Realm Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">SERVER REALM</span>
-                <div class="language-row-item realm-row">
-                    <div class="language-label-group">
-                        <span class="language-icon">🏰</span>
-                        <span class="language-title">North America (NA-East)</span>
-                    </div>
-                    <span class="realm-latency-badge">Low Latency (32ms)</span>
-                </div>
+            <!-- Action Button -->
+            <div class="reset-action-container">
+                <button type="button" class="reset-danger-btn">Reset Character to Level 1</button>
             </div>
         </div>
     </main>

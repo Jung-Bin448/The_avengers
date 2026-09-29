@@ -1,60 +1,114 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound Settings - Level Up Life</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>Sound Effects & Quest Audio - The Avengers</title>
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-layout">
+<body class="dashboard-page-body">
 
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
-            <a href="quests.php" class="nav-link"><i class="fa-regular fa-folder-open"></i><span>Collection</span></a>
-            <a href="dashboard.php" class="nav-link"><i class="fa-solid fa-swords"></i><span>Quest</span></a>
-            <a href="parties.php" class="nav-link"><i class="fa-solid fa-users"></i><span>Party</span></a>
-            <a href="profile.php" class="nav-link"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+            <a href="collection.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+                <span>Collection</span>
+            </a>
+
+            <a href="dashboard.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="quests.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span>Quest</span>
+            </a>
+
+            <a href="party.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Party</span>
+            </a>
+
+            <a href="profile.php" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+            </a>
         </nav>
     </aside>
 
-    <main class="dashboard-main">
-        <header class="settings-sub-header">
-            <a href="settings.php" class="back-link"><i class="fa-solid fa-chevron-left"></i> Sound Effects & Quest Audio</a>
-        </header>
+    <!-- Main Content Area -->
+    <main class="main-content sound-settings-main-content">
+        <!-- Back Navigation Header -->
+        <div class="sound-page-header">
+            <a href="settings.php" class="sound-back-link">&lsaquo; Sound Effects & Quest Audio</a>
+        </div>
 
-        <div class="settings-sub-container">
-            <div class="setting-row-box">
-                <div class="setting-row-left">
-                    <i class="fa-solid fa-volume-high setting-icon"></i>
-                    <span>Master Volume</span>
+        <!-- Sound Settings Box Wrapper -->
+        <div class="sound-content-wrapper">
+            <!-- Master Volume Row -->
+            <div class="sound-row-item">
+                <div class="sound-label-group">
+                    <span class="sound-icon">🔊</span>
+                    <span class="sound-title">Master Volume</span>
                 </div>
-                <div class="slider-group">
-                    <input type="range" min="0" max="100" value="90" class="custom-range">
-                    <span class="range-val">90%</span>
+                <div class="sound-slider-group">
+                    <div class="slider-track">
+                        <div class="slider-fill" style="width: 90%;"></div>
+                        <div class="slider-thumb" style="left: 90%;"></div>
+                    </div>
+                    <span class="sound-percentage">90%</span>
                 </div>
             </div>
 
-            <div class="setting-row-box">
-                <div class="setting-row-left">
-                    <i class="fa-solid fa-music setting-icon"></i>
-                    <span>Sound Effects (SFX)</span>
+            <!-- Sound Effects (SFX) Row -->
+            <div class="sound-row-item">
+                <div class="sound-label-group">
+                    <span class="sound-icon">🎵</span>
+                    <span class="sound-title">Sound Effects (SFX)</span>
                 </div>
-                <div class="slider-group">
-                    <input type="range" min="0" max="100" value="70" class="custom-range">
-                    <span class="range-val">70%</span>
+                <div class="sound-slider-group">
+                    <div class="slider-track">
+                        <div class="slider-fill" style="width: 70%;"></div>
+                        <div class="slider-thumb" style="left: 70%;"></div>
+                    </div>
+                    <span class="sound-percentage">70%</span>
                 </div>
             </div>
 
-            <div class="setting-row-box">
-                <div class="setting-row-left">
-                    <i class="fa-solid fa-compact-disc setting-icon"></i>
-                    <span>Quest / Background Music</span>
+            <!-- Quest / Background Music Row -->
+            <div class="sound-row-item">
+                <div class="sound-label-group">
+                    <span class="sound-icon">🎶</span>
+                    <span class="sound-title">Quest / Background Music</span>
                 </div>
-                <div class="slider-group">
-                    <input type="range" min="0" max="100" value="50" class="custom-range">
-                    <span class="range-val">50%</span>
+                <div class="sound-slider-group">
+                    <div class="slider-track">
+                        <div class="slider-fill" style="width: 50%;"></div>
+                        <div class="slider-thumb" style="left: 50%;"></div>
+                    </div>
+                    <span class="sound-percentage">50%</span>
                 </div>
             </div>
         </div>

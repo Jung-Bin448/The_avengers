@@ -1,251 +1,94 @@
-<?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$characterName = $_SESSION['username'];
-$maxLength = 20;
-$currentLength = strlen($characterName);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Character Name & Avatar - Level Up Life</title>
-
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="../assests/css/Style.css">
+    <title>Edit Character - The Avengers</title>
+    <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-layout">
+<body class="dashboard-page-body">
 
-    <!-- Desktop Sidebar -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
-            <a href="quests.php" class="nav-link">
-                <i class="fa-regular fa-folder-open"></i>
+            <a href="collection.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
                 <span>Collection</span>
             </a>
-            <a href="dashboard.php" class="nav-link">
-                <i class="fa-solid fa-swords"></i>
+
+            <a href="dashboard.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="quests.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
                 <span>Quest</span>
             </a>
-            <a href="parties.php" class="nav-link">
-                <i class="fa-solid fa-users"></i>
+
+            <a href="party.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
                 <span>Party</span>
             </a>
-            <a href="profile.php" class="nav-link">
-                <i class="fa-regular fa-user"></i>
+
+            <a href="profile.php" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
                 <span>Profile</span>
             </a>
         </nav>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="dashboard-main subpage-container">
-
-        <!-- Back Header -->
-        <a href="settings.php" class="subpage-back-link">
-            <i class="fa-solid fa-chevron-left"></i> Edit Character Name & Avatar
-        </a>
-
-        <!-- Edit Form Box -->
-        <div class="edit-character-card">
-            
-            <form class="edit-character-form" id="editCharacterForm">
-                
-                <!-- Left Input Section -->
-                <div class="character-form-left">
-                    <label class="input-section-label">CHARACTER NAME</label>
-                    
-                    <div class="input-with-counter">
-                        <input 
-                            type="text" 
-                            name="character_name" 
-                            id="characterNameInput" 
-                            value="<?php echo htmlspecialchars($characterName); ?>" 
-                            maxlength="<?php echo $maxLength; ?>" 
-                            required
-                        >
-                        <span class="char-counter" id="charCounter"><?php echo $currentLength; ?>/<?php echo$maxLength; ?></span>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="edit-form-actions">
-                        <button type="submit" class="btn-save-changes">Save changes</button>
-                        <a href="settings.php" class="btn-cancel-edit">Cancel</a>
-                    </div>
-                </div>
-
-                <!-- Right Avatar Section -->
-                <div class="character-form-right">
-                    <div class="avatar-preview-circle">
-                        <img
-                            id="avatarPreview"
-                            src=""
-                            alt="Profile Avatar"
-                            style="display: none;"
-                        >
-
-                        <i
-                            id="avatarPreviewFallback"
-                            class="fa-regular fa-user avatar-preview-icon">
-                        </i>
-                    </div>
-                    
-                    <!-- Hidden file input triggered by button -->
-                    <input type="file" name="avatar" id="avatarFileInput" accept="image/*" style="display: none;">
-                    <button type="button" class="btn-change-avatar" onclick="document.getElementById('avatarFileInput').click();">
-                        Change Avatar
-                    </button>
-                </div>
-
-            </form>
-
+    <main class="main-content edit-character-main-content">
+        <!-- Back Navigation Header -->
+        <div class="edit-page-header">
+            <a href="settings.php" class="edit-back-link">&lsaquo; Edit Character Name & Avatar</a>
         </div>
 
+        <!-- Edit Form Content Layout -->
+        <div class="edit-content-layout">
+            <!-- Left Side: Character Name Card Box -->
+            <div class="edit-form-card">
+                <label class="edit-input-label" for="char-name">CHARACTER NAME</label>
+                
+                <div class="edit-input-group">
+                    <input type="text" id="char-name" value="ShadowKnight_99" class="edit-text-field" maxlength="20">
+                    <span class="edit-char-counter">14/20</span>
+                </div>
+
+                <div class="edit-actions-row">
+                    <button type="button" class="btn-save-changes">Save changes</button>
+                    <button type="button" class="btn-cancel-edit">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Right Side: Avatar Circle & Button -->
+            <div class="edit-avatar-section">
+                <div class="edit-avatar-circle-preview"></div>
+                <button type="button" class="btn-change-avatar">Change Avatar</button>
+            </div>
+        </div>
     </main>
-
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav">
-        <a href="collection.php" class="mobile-nav-link">
-            <i class="fa-regular fa-folder-open"></i>
-            <span>Collection</span>
-        </a>
-        <a href="dashboard.php" class="mobile-nav-link">
-            <i class="fa-solid fa-swords"></i>
-            <span>Quest</span>
-        </a>
-        <a href="parties.php" class="mobile-nav-link">
-            <i class="fa-solid fa-users"></i>
-            <span>Party</span>
-        </a>
-        <a href="profile.php" class="mobile-nav-link">
-            <i class="fa-regular fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </nav>
-
-    <!-- Dynamic Character Counter Script -->
-    <script>
-    const input = document.getElementById('characterNameInput');
-    const counter = document.getElementById('charCounter');
-    const form = document.getElementById('editCharacterForm');
-    const avatarInput = document.getElementById('avatarFileInput');
-
-    const avatarPreview = document.getElementById('avatarPreview');
-    const avatarPreviewFallback = document.getElementById('avatarPreviewFallback');
-
-    const maxLength = <?php echo $maxLength; ?>;
-
-    async function loadCurrentAvatar() {
-        try {
-            const response = await fetch('../api/profile.php');
-            const result = await response.json();
-
-            if (!result.success) {
-                return;
-            }
-
-            const user = result.user;
-
-            if (user.avatar_path) {
-                avatarPreview.src = user.avatar_path;
-                avatarPreview.style.display = 'block';
-                avatarPreviewFallback.style.display = 'none';
-            } else {
-                avatarPreview.style.display = 'none';
-                avatarPreviewFallback.style.display = 'block';
-            }  
-
-        } catch (error) {
-            console.error("Failed to load avatar:", error);
-        }
-    }
-
-    loadCurrentAvatar();
-
-    // Character name counter
-    input.addEventListener('input', () => {
-        counter.textContent = `${input.value.length}/${maxLength}`;
-    });
-
-
-    // Character name update
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        const formData = new FormData();
-
-        formData.append('character_name', input.value);
-
-        try {
-            const response = await fetch('../api/update-profile.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert(result.message);
-                window.location.href = 'profile.php';
-            } else {
-                alert(result.message);
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert('Something went wrong. Please try again.');
-        }
-    });
-
-
-    // Avatar upload
-    avatarInput.addEventListener('change', async function() {
-
-        // Make sure a file was selected
-        if (!avatarInput.files.length) {
-            return;
-        }
-
-        const avatarFile = avatarInput.files[0];
-
-        const formData = new FormData();
-        formData.append('avatar', avatarFile);
-
-        try {
-
-            const response = await fetch('../api/update-avatar.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert(result.message);
-
-                // Refresh the page so the new avatar can be displayed
-                window.location.reload();
-
-            } else {
-                alert(result.message);
-            }
-
-        } catch (error) {
-
-            console.error(error);
-            alert('Something went wrong while uploading the avatar.');
-        }
-    });
-    </script>
 
 </body>
 </html>
