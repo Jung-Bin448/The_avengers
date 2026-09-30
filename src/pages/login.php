@@ -40,11 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-<<<<<<< HEAD
-        <form action="../api/login.php" method="POST" class="login-form" id="loginForm">
-=======
         <form action="login.php" method="POST" class="login-form">
->>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
             
             <div class="form-group">
                 <div class="label-row">
@@ -99,37 +95,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </div>
 
-<<<<<<< HEAD
-    <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        const form = event.target;
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch('../api/login.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert(result.message);
-                window.location.href = 'dashboard.php';
-            } else {
-                alert(result.message);
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert('Something went wrong. Please try again.');
-        }
-    });
-    </script>
-
-=======
->>>>>>> f4e8c7e (Add sub-settings, create quest page, and update fab button link)
 </body>
 </html>
