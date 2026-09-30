@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language / Realm - The Avengers</title>
+    <title>Connected Guild Accounts - The Avengers</title>
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
 <body class="dashboard-page-body">
@@ -59,35 +59,47 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="main-content language-realm-main-content">
+    <main class="main-content connected-guilds-main-content">
         <!-- Back Navigation Header -->
-        <div class="language-page-header">
-            <a href="settings.php" class="language-back-link">&lsaquo; Language / Realm</a>
+        <div class="guilds-page-header">
+            <a href="settings.php" class="guilds-back-link">&lsaquo; Connected Guild Accounts</a>
         </div>
 
-        <!-- Language & Realm Content Box Wrapper -->
-        <div class="language-content-wrapper">
-            <!-- Game Language Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">GAME LANGUAGE</span>
-                <div class="language-row-item">
-                    <div class="language-label-group">
-                        <span class="language-icon">🌐</span>
-                        <span class="language-title">English (US)</span>
-                    </div>
-                    <span class="language-arrow">&rsaquo;</span>
+        <!-- Accounts List Wrapper Container -->
+        <div class="guilds-content-wrapper">
+            <!-- Discord Row -->
+            <div class="guild-row-item">
+                <div class="guild-info-group">
+                    <div class="guild-platform-icon">💬</div>
+                    <span class="guild-name">Discord</span>
+                </div>
+                <div class="guild-status-group">
+                    <span class="guild-status-text connected">Connected</span>
+                    <button type="button" class="guild-btn disconnect-btn">Disconnect</button>
                 </div>
             </div>
 
-            <!-- Server Realm Section -->
-            <div class="language-section-group">
-                <span class="language-section-title">SERVER REALM</span>
-                <div class="language-row-item realm-row">
-                    <div class="language-label-group">
-                        <span class="language-icon">🏰</span>
-                        <span class="language-title">North America (NA-East)</span>
-                    </div>
-                    <span class="realm-latency-badge">Low Latency (32ms)</span>
+            <!-- Google Play Games Row -->
+            <div class="guild-row-item">
+                <div class="guild-info-group">
+                    <div class="guild-platform-icon">🎮</div>
+                    <span class="guild-name">Google Play Games</span>
+                </div>
+                <div class="guild-status-group">
+                    <span class="guild-status-text connected">Connected</span>
+                    <button type="button" class="guild-btn disconnect-btn">Disconnect</button>
+                </div>
+            </div>
+
+            <!-- Steam Row -->
+            <div class="guild-row-item">
+                <div class="guild-info-group">
+                    <div class="guild-platform-icon">🌐</div>
+                    <span class="guild-name">Steam</span>
+                </div>
+                <div class="guild-status-group">
+                    <span class="guild-status-text not-connected">Not Connected</span>
+                    <button type="button" class="guild-btn connect-btn">Connected</button>
                 </div>
             </div>
         </div>

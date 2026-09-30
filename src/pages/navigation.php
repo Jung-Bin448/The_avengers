@@ -1,23 +1,12 @@
-<!-- Navigation Bar (Desktop Sidebar / Mobile Bottom Bar) -->
-<nav class="responsive-nav">
-    <a href="shop.php" class="nav-item">
-        <i class="fa-solid fa-cart-shopping icon-yellow"></i>
-        <span>Shop</span>
-    </a>
-    <a href="collection.php" class="nav-item">
-        <i class="fa-regular fa-clone"></i>
-        <span>Collection</span>
-    </a>
-    <a href="dashboard.php" class="nav-item">
-        <i class="fa-solid fa-swords"></i>
-        <span>Quest</span>
-    </a>
-    <a href="party.php" class="nav-item">
-        <i class="fa-solid fa-user-group"></i>
-        <span>Party</span>
-    </a>
-    <a href="dashboard.php" class="nav-item active">
-        <i class="fa-solid fa-user"></i>
-        <span>Profile</span>
-    </a>
-</nav>
+<aside class="sidebar">
+    <div class="brand">THE AVENGERS</div>
+    <nav>
+        <a href="dashboard.php">📊 Dashboard</a>
+        <a href="quest.php">⚔️ Quests</a>
+        <a href="parties.php">🛡️ Parties</a>
+        <a href="collection.php">📦 Collection</a>
+        <a href="shop.php">🛒 Shop</a>
+        <a href="profile.php">👤 Profile</a>
+        <a href="settings.php">⚙️ Settings</a>
+    </nav>
+</aside>

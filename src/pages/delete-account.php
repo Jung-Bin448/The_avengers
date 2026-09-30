@@ -1,85 +1,91 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Account - Level Up Life</title>
-
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="../assests/css/Style.css">
+    <title>Delete Account - The Avengers</title>
+    <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-layout">
+<body class="dashboard-page-body">
 
-    <!-- Desktop Sidebar -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
-            <a href="collection.php" class="nav-link">
-                <i class="fa-regular fa-folder-open"></i>
+            <a href="collection.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
                 <span>Collection</span>
             </a>
-            <a href="dashboard.php" class="nav-link">
-                <i class="fa-solid fa-swords"></i>
+
+            <a href="dashboard.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="quests.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
                 <span>Quest</span>
             </a>
-            <a href="parties.php" class="nav-link">
-                <i class="fa-solid fa-users"></i>
+
+            <a href="party.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
                 <span>Party</span>
             </a>
-            <a href="profile.php" class="nav-link">
-                <i class="fa-regular fa-user"></i>
+
+            <a href="profile.php" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
                 <span>Profile</span>
             </a>
         </nav>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="dashboard-main subpage-container">
-
-        <!-- Back Header -->
-        <a href="settings.php" class="subpage-back-link">
-            <i class="fa-solid fa-chevron-left"></i> Delete Account
-        </a>
-
-        <div class="subpage-content-center">
-            <!-- Warning Box -->
-            <div class="delete-warning-card">
-                <i class="fa-solid fa-triangle-exclamation delete-warning-icon"></i>
-                <p class="delete-warning-text">
-                    Warning: Deleting your account is permanent. All your character stats, items, levels, and guild data will be wiped out completely and cannot be recovered.
-                </p>
-            </div>
-
-            <!-- Delete Action Button -->
-            <button class="btn-delete-permanent" type="button">Permanently Delete Account</button>
+    <main class="main-content delete-account-main-content">
+        <!-- Back Navigation Header -->
+        <div class="delete-page-header">
+            <a href="settings.php" class="delete-back-link">&lsaquo; Delete Account</a>
         </div>
 
-    </main>
+        <!-- Warning Card Container -->
+        <div class="delete-content-wrapper">
+            <div class="delete-warning-banner">
+                <div class="warning-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warning-svg">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="warning-text-content">
+                    <p><strong>Warning:</strong> Deleting your account is permanent. All your character stats, items, levels, and guild data will be wiped out completely and cannot be recovered[cite: 9].</p>
+                </div>
+            </div>
 
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav">
-        <a href="quests.php" class="mobile-nav-link">
-            <i class="fa-regular fa-folder-open"></i>
-            <span>Collection</span>
-        </a>
-        <a href="dashboard.php" class="mobile-nav-link">
-            <i class="fa-solid fa-swords"></i>
-            <span>Quest</span>
-        </a>
-        <a href="parties.php" class="mobile-nav-link">
-            <i class="fa-solid fa-users"></i>
-            <span>Party</span>
-        </a>
-        <a href="profile.php" class="mobile-nav-link">
-            <i class="fa-regular fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </nav>
+            <!-- Action Button -->
+            <div class="delete-action-container">
+                <button type="button" class="permanent-delete-btn">Permanently Delete Account</button>
+            </div>
+        </div>
+    </main>
 
 </body>
 </html>

@@ -1,193 +1,102 @@
-<?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$username = $_SESSION['username'];
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Level Up Life</title>
-
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="../assests/css/Style.css">
+    <title>Profile - The Avengers</title>
+    <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-layout">
+<body class="dashboard-page-body">
 
-    <!-- Desktop Sidebar -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
-            <a href="quests.php" class="nav-link">
-                <i class="fa-regular fa-folder-open"></i>
+            <a href="collection.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
                 <span>Collection</span>
             </a>
-            <a href="dashboard.php" class="nav-link">
-                <i class="fa-solid fa-swords"></i>
+
+            <a href="dashboard.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="quests.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
                 <span>Quest</span>
             </a>
-            <a href="parties.php" class="nav-link">
-                <i class="fa-solid fa-users"></i>
+
+            <a href="party.php" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
                 <span>Party</span>
             </a>
-            <a href="profile.php" class="nav-link active">
-                <i class="fa-regular fa-user"></i>
+
+            <a href="profile.php" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
                 <span>Profile</span>
             </a>
         </nav>
     </aside>
 
-    <!-- Main Profile Area -->
-    <main class="dashboard-main">
+    <!-- Main Content Area -->
+    <main class="main-content profile-main-content">
+        <!-- Page Switcher Bar -->
+        <div class="page-switcher-bar">
+            <a href="party.php" class="switch-btn">&larr; Party Chat</a>
+            <span class="switcher-title">User Profile</span>
+            <a href="settings.php" class="switch-btn">Settings &rarr;</a>
+        </div>
 
-        <!-- Top Profile Header Section -->
-        <section class="profile-header-card">
-            <!-- Settings Gear Icon -->
-<a href="settings.php" class="settings-btn" aria-label="Settings">
-    <i class="fa-solid fa-gear"></i>
-</a>
-
-            <div class="profile-header-content">
-                <!-- Avatar and Username Column -->
-                <div class="profile-avatar-column">
-                    <div class="profile-avatar-circle">
-                        <img
-                            id="profileAvatar"
-                            src=""
-                            alt="Profile Avatar"
-                            style="display: none;"
-                        >
-
-                        <i
-                            id="avatarFallback"
-                            class="fa-regular fa-user avatar-fallback-icon">
-                        </i>
-                    </div>
-                    <h2 class="profile-username"><?php echo htmlspecialchars($username); ?></h2>
-                    <a href="edit-character.php" class="edit-profile-btn">
-                        Edit profile
-                    </a>
-                </div>
-
-                <!-- Info, Level Bar & Bio Column -->
-                <div class="profile-info-column">
-                    <div class="profile-level-section">
-                        <span class="profile-level-title">
-                            Level <span id="userLevel">1</span> Adventurer
-                        </span>
-                        <div class="progress-bar-bg profile-progress-bg">
-                            <div
-                                class="progress-bar-fill profile-progress-fill"
-                                id="profileProgressBar"
-                                style="width: 0%;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="profile-bio-box">
-                        <p id="profileBio">Grinding code and conquering bugs ⚡</p>
-                    </div>
+        <div class="profile-header-card">
+            <div class="profile-user-info">
+                <div class="profile-avatar-circle"></div>
+                <div class="profile-meta">
+                    <h2>Adventurer Profile</h2>
+                    <p class="profile-handle">@the_avengers_hero</p>
                 </div>
             </div>
-        </section>
+            <a href="settings.php" class="settings-gear-btn" title="Go to Settings">
+                ⚙️
+            </a>
+        </div>
 
-        <!-- Two Block Grid: Ranks & Recent Achievements -->
-        <section class="profile-grid">
-            
-            <!-- Ranks Box -->
-            <div class="profile-card-block">
-                <h3 class="block-title">Ranks</h3>
-                <div class="block-content">
-                    <!-- Dynamic/custom rank content goes here -->
-                </div>
+        <div class="profile-details-grid">
+            <div class="profile-card">
+                <h3>Character Stats</h3>
+                <ul class="stats-list">
+                    <li><span>Level:</span> <strong>5</strong></li>
+                    <li><span>Class:</span> <strong>Paladin / Mage</strong></li>
+                    <li><span>Completed Quests:</span> <strong>24</strong></li>
+                </ul>
             </div>
 
-            <!-- Recent Achievements Box -->
-            <div class="profile-card-block">
-                <h3 class="block-title">Recent Achievements</h3>
-                <div class="block-content">
-                    <!-- Dynamic/custom achievements content goes here -->
-                </div>
+            <div class="profile-card">
+                <h3>Achievements Unlocked</h3>
+                <p class="profile-desc">View your tier badges and collected artifacts in the Collection page.</p>
+                <a href="collection.php" class="profile-action-link">Open Collection &rarr;</a>
             </div>
-
-        </section>
-
+        </div>
     </main>
-
-    <!-- Sticky Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav">
-        <a href="collection.php" class="mobile-nav-link">
-            <i class="fa-regular fa-folder-open"></i>
-            <span>Collection</span>
-        </a>
-        <a href="dashboard.php" class="mobile-nav-link">
-            <i class="fa-solid fa-swords"></i>
-            <span>Quest</span>
-        </a>
-        <a href="parties.php" class="mobile-nav-link">
-            <i class="fa-solid fa-users"></i>
-            <span>Party</span>
-        </a>
-        <a href="profile.php" class="mobile-nav-link active">
-            <i class="fa-regular fa-user"></i>
-            <span>Profile</span>
-        </a>
-    </nav>
-
-    <script>
-    async function loadProfile() {
-        try {
-            const response = await fetch('../api/profile.php');
-            const result = await response.json();
-
-            if (!result.success) {
-                console.error(result.message);
-                return;
-            }
-
-            const user = result.user;
-
-            console.log("Profile user:", user);
-
-            // Update avatar
-            const avatar = document.getElementById('profileAvatar');
-            const avatarFallback = document.getElementById('avatarFallback');
-
-            if (user.avatar_path) {
-                avatar.src = user.avatar_path;
-                avatar.style.display = 'block';
-                avatarFallback.style.display = 'none';
-            } else {
-            avatar.style.display = 'none';
-                avatarFallback.style.display = 'block';
-            }
-
-            // Update level
-            document.getElementById('userLevel').textContent = user.level;
-
-            // Calculate XP progress
-            const xp = Number(user.xp);
-            const progressPercent = xp % 100;
-
-            // Update progress bar
-            document.getElementById('profileProgressBar').style.width =
-            progressPercent + '%';
-
-        } catch (error) {
-            console.error("Failed to load profile:", error);
-        }
-    }
-
-    loadProfile();
-    </script>
 
 </body>
 </html>

@@ -1,36 +1,11 @@
-// ==========================================
-// SHARED ELEMENTS
-// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Highlight active link based on current path
+    const currentPath = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.sidebar nav a');
 
-const googleButton = document.getElementById("googleButton");
-const facebookButton = document.getElementById("facebookButton");
-
-// Google Button Click - Navigate directly to dashboard
-if (googleButton) {
-    googleButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.location.href = "dashboard.php";
-    });
-}
-
-// Facebook Button Click - Navigate directly to dashboard
-if (facebookButton) {
-    facebookButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.location.href = "dashboard.php";
-    });
-}
-
-// ==========================================
-// NAVIGATION & INTERACTIVE UI
-// ==========================================
-
-document.addEventListener("DOMContentLoaded", function () {
-    const navItems = document.querySelectorAll(".nav-item");
-    navItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            navItems.forEach((nav) => nav.classList.remove("active"));
-            this.classList.add("active");
-        });
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        }
     });
 });
