@@ -1,94 +1,115 @@
+<?php
+$current_page = 'settings';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Character - The Avengers</title>
+    <title>Edit Character Name & Avatar - Level Up Life</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- App Stylesheets -->
+    <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-page-body">
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <a href="collection.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-                </svg>
+<body>
+    <div class="app-container">
+        
+        <!-- Standardized Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="collection.php" class="nav-item <?php echo ($current_page == 'collection') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-folder"></i>
                 <span>Collection</span>
             </a>
-
-            <a href="dashboard.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
-                </svg>
+            <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-border-all"></i>
                 <span>Dashboard</span>
             </a>
-
-            <a href="quests.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
+            <a href="quests.php" class="nav-item <?php echo ($current_page == 'quests') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-shield-halved"></i>
                 <span>Quest</span>
             </a>
-
-            <a href="party.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+            <a href="party.php" class="nav-item <?php echo ($current_page == 'party') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-users"></i>
                 <span>Party</span>
             </a>
-
-            <a href="profile.php" class="nav-item active">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+            <a href="profile.php" class="nav-item <?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-user"></i>
                 <span>Profile</span>
             </a>
-        </nav>
-    </aside>
+        </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content edit-character-main-content">
-        <!-- Back Navigation Header -->
-        <div class="edit-page-header">
-            <a href="settings.php" class="edit-back-link">&lsaquo; Edit Character Name & Avatar</a>
-        </div>
-
-        <!-- Edit Form Content Layout -->
-        <div class="edit-content-layout">
-            <!-- Left Side: Character Name Card Box -->
-            <div class="edit-form-card">
-                <label class="edit-input-label" for="char-name">CHARACTER NAME</label>
-                
-                <div class="edit-input-group">
-                    <input type="text" id="char-name" value="ShadowKnight_99" class="edit-text-field" maxlength="20">
-                    <span class="edit-char-counter">14/20</span>
-                </div>
-
-                <div class="edit-actions-row">
-                    <button type="button" class="btn-save-changes">Save changes</button>
-                    <button type="button" class="btn-cancel-edit">Cancel</button>
-                </div>
+        <!-- Main Edit Character Workspace Canvas -->
+        <main class="main-content">
+            
+            <!-- Page Header with Back Link -->
+            <div class="top-header">
+                <!-- Replace href="#" with href="edit-character.php" -->
+                <a href="edit-character.php" class="settings-menu-item">
+                    <div class="menu-item-label">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Edit Character Name & Avatar</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                </a>
             </div>
 
-            <!-- Right Side: Avatar Circle & Button -->
-            <div class="edit-avatar-section">
-                <div class="edit-avatar-circle-preview"></div>
-                <button type="button" class="btn-change-avatar">Change Avatar</button>
-            </div>
-        </div>
-    </main>
+            <!-- Edit Form Workspace Card -->
+            <div class="dashboard-card edit-character-card">
+                <form action="edit-character.php" method="POST" enctype="multipart/form-data" class="edit-character-form">
+                    
+                    <!-- Left Section: Character Name Field & Form Actions -->
+                    <div class="edit-form-left">
+                        <label class="form-label" for="character_name">CHARACTER NAME</label>
+                        
+                        <div class="input-with-counter">
+                            <input 
+                                type="text" 
+                                id="character_name" 
+                                name="character_name" 
+                                value="ShadowKnight_99" 
+                                maxlength="20" 
+                                required
+                            >
+                            <span class="char-counter" id="charCounter">14/20</span>
+                        </div>
 
+                        <div class="form-action-buttons">
+                            <button type="submit" class="btn-save">Save changes</button>
+                            <a href="settings.php" class="btn-cancel">Cancel</a>
+                        </div>
+                    </div>
+
+                    <!-- Right Section: Avatar Upload Column -->
+                    <div class="edit-avatar-right">
+                        <div class="avatar-preview-ring">
+                            <div class="avatar-circle-placeholder">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </div>
+                        
+                        <label for="avatar_upload" class="btn-change-avatar">
+                            Change Avatar
+                        </label>
+                        <input type="file" id="avatar_upload" name="avatar" accept="image/*" class="hidden-file-input">
+                    </div>
+
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Live Character Counter Script -->
+    <script>
+        const input = document.getElementById('character_name');
+        const counter = document.getElementById('charCounter');
+
+        input.addEventListener('input', () => {
+            const currentLength = input.value.length;
+            counter.textContent = `${currentLength}/20`;
+        });
+    </script>
 </body>
 </html>

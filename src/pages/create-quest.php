@@ -130,4 +130,127 @@
     </main>
 
 </body>
+</html><?php
+$current_page = 'quests';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Quest - Level Up Life</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- App Stylesheet -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assests/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Standardized Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="collection.php" class="nav-item <?php echo ($current_page == 'collection') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-folder"></i>
+                <span>Collection</span>
+            </a>
+            <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-border-all"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="quests.php" class="nav-item <?php echo ($current_page == 'quests') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Quest</span>
+            </a>
+            <a href="party.php" class="nav-item <?php echo ($current_page == 'party') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-users"></i>
+                <span>Party</span>
+            </a>
+            <a href="profile.php" class="nav-item <?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </aside>
+
+        <!-- Main Workspace Canvas -->
+        <main class="main-content">
+            
+            <!-- Header with Back Link -->
+            <div class="top-header">
+                <a href="quests.php" class="back-link-title">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <h2>Create New Quest</h2>
+                </a>
+            </div>
+
+            <!-- Create Quest Workspace Card -->
+            <div class="dashboard-card create-quest-card">
+                <form class="quest-form" action="quests.php" method="POST">
+                    
+                    <!-- Quest Title Field -->
+                    <div class="form-group">
+                        <input type="text" class="quest-input-field" name="quest_title" placeholder="Defeat the Inbox Dragon" required>
+                    </div>
+
+                    <!-- Quest Details Textarea -->
+                    <div class="form-group">
+                        <textarea class="quest-textarea-field" name="quest_details" rows="3" placeholder="Add quest details, sub-objectives, or notes...."></textarea>
+                    </div>
+
+                    <!-- Quest Type Selection -->
+                    <div class="quest-type-section">
+                        <h4 class="section-subtitle">QUEST TYPE</h4>
+                        <div class="quest-types-grid">
+                            
+                            <label class="quest-type-pill active">
+                                <input type="radio" name="quest_type" value="daily_bounty" checked>
+                                <i class="fa-solid fa-swords"></i>
+                                <span>Daily Bounty</span>
+                            </label>
+
+                            <label class="quest-type-pill">
+                                <input type="radio" name="quest_type" value="boss_raid">
+                                <i class="fa-solid fa-shield-cat"></i>
+                                <span>Boss Raid</span>
+                            </label>
+
+                            <label class="quest-type-pill">
+                                <input type="radio" name="quest_type" value="side_quest">
+                                <i class="fa-solid fa-vial"></i>
+                                <span>Side Quest</span>
+                            </label>
+
+                            <button type="button" class="btn-add-type">
+                                <span>Add Type</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- Dates Row -->
+                    <div class="quest-dates-row">
+                        <div class="date-badge">
+                            <span class="date-label">Start:</span>
+                            <span class="date-value">Today</span>
+                        </div>
+                        <div class="date-badge-divider"></div>
+                        <div class="date-badge">
+                            <span class="date-label-danger">Deadline:</span>
+                            <span class="date-value-danger">Tomorrow</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-submit-container">
+                        <button type="submit" class="btn-primary-action">
+                            Accept & Post Quest
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </main>
+    </div>
+</body>
 </html>

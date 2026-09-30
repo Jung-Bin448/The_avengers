@@ -1,101 +1,49 @@
 <?php
-
-require_once __DIR__ . '/../config/database.php';
-
 session_start();
-
-header('Content-Type: application/json');
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode([
-        "success" => false,
-        "message" => "Method not allowed."
-    ]);
-    exit;
-}
+require_once '../config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode([
-        "success" => false,
-        "message" => "Not logged in."
-    ]);
+    header("Location: ../pages/login.php");
     exit;
 }
 
-$username = trim($_POST['character_name'] ?? '');
+$user_id = $_SESSION['user_id'];
 
-if ($username === '') {
-    http_response_code(400);
-    echo json_encode([
-        "success" => false,
-        "message" => "Character name cannot be empty."
-    ]);
-    exit;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
 
-if (strlen($username) > 20) {
-    http_response_code(400);
-    echo json_encode([
-        "success" => false,
-        "message" => "Character name must be 20 characters or less."
-    ]);
-    exit;
-}
-
-try {
-
-    // Check if another user already has this username
-    $stmt = $pdo->prepare("
-        SELECT user_id
-        FROM users
-        WHERE username = :username
-        AND user_id != :user_id
-        LIMIT 1
-    ");
-
-    $stmt->execute([
-        'username' => $username,
-        'user_id' => $_SESSION['user_id']
-    ]);
-
-    if ($stmt->fetch()) {
-        http_response_code(409);
-        echo json_encode([
-            "success" => false,
-            "message" => "That character name is already taken."
-        ]);
-        exit;
+    // 1. Handle Username Update
+    if (!empty($username)) {
+        $stmt = $pdo->prepare("UPDATE users SET username = ? WHERE user_id = ?");
+        $stmt->execute([$username, $user_id]);
+        $_SESSION['username'] = $username;
     }
 
-    // Update username
-    $stmt = $pdo->prepare("
-        UPDATE users
-        SET username = :username
-        WHERE user_id = :user_id
-    ");
+    // 2. Handle Avatar Image Upload
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['avatar']['tmp_name'];
+        $fileName = $_FILES['avatar']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    $stmt->execute([
-        'username' => $username,
-        'user_id' => $_SESSION['user_id']
-    ]);
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $newFileName = 'avatar_' . $user_id . '_' . time() . '.' . $fileExtension;
+            $uploadFileDir = '../uploads/avatars/'; // Matches your folder structure!
+            
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0755, true);
+            }
 
-    // Update session username
-    $_SESSION['username'] = $username;
+            $dest_path = $uploadFileDir . $newFileName;
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Character name updated successfully.",
-        "username" => $username
-    ]);
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $avatarPath = 'uploads/avatars/' . $newFileName;
+                $stmt = $pdo->prepare("UPDATE users SET avatar_path = ? WHERE user_id = ?");
+                $stmt->execute([$avatarPath, $user_id]);
+            }
+        }
+    }
 
-} catch (PDOException $e) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        "success" => false,
-        "message" => "Database error."
-    ]);
+    header("Location: ../pages/edit-character.php?success=1");
+    exit;
 }

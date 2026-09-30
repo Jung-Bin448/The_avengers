@@ -1,155 +1,198 @@
+<?php
+session_start();
+require_once __DIR__ . '/../config/database.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$current_page = 'settings';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - The Avengers</title>
+    <title>Settings - Level Up Life</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
-<body class="dashboard-page-body">
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <a href="collection.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-                </svg>
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="collection.php" class="nav-item <?php echo ($current_page == 'collection') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-folder"></i>
                 <span>Collection</span>
             </a>
-
-            <a href="dashboard.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
-                </svg>
+            <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-border-all"></i>
                 <span>Dashboard</span>
             </a>
-
-            <a href="quests.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
+            <a href="quests.php" class="nav-item <?php echo ($current_page == 'quests') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-shield-halved"></i>
                 <span>Quest</span>
             </a>
-
-            <a href="party.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+            <a href="party.php" class="nav-item <?php echo ($current_page == 'party') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-users"></i>
                 <span>Party</span>
             </a>
-
-            <a href="profile.php" class="nav-item active">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+            <a href="profile.php" class="nav-item <?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
+                <i class="fa-regular fa-user"></i>
                 <span>Profile</span>
             </a>
-        </nav>
-    </aside>
+        </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content settings-main-content">
-        <!-- Page Switcher Bar -->
-        <div class="page-switcher-bar">
-            <a href="profile.php" class="switch-btn">&larr; Back to Profile</a>
-            <span class="switcher-title">Settings Panel</span>
-            <a href="dashboard.php" class="switch-btn">Dashboard &rarr;</a>
-        </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="settings-page-wrapper">
+                <header class="settings-header">
+                    <h2>Settings</h2>
+                    <p>Customize your adventure experience</p>
+                </header>
 
-        <header class="settings-page-header">
-            <h2>Settings</h2>
-            <p>Customize your adventure experience</p>
-        </header>
-
-        <!-- Settings Dashboard Grid -->
-        <div class="settings-grid-layout">
-            <!-- Left Column: Account & Danger Zone -->
-            <div class="settings-column">
-                <div class="settings-card">
-                    <h3>Account</h3>
-                    <div class="settings-links-list">
-                        <a href="edit-character.php" class="settings-link-item">
-    <span class="settings-link-icon">👤</span>
-    <span>Edit Character Name & Avatar</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                        <a href="connected-guilds.php" class="settings-link-item">
-    <span class="settings-link-icon">🔗</span>
-    <span>Connected Guild Accounts</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                        <a href="delete-account.php" class="settings-link-item text-danger">
-    <span class="settings-link-icon">🗑️</span>
-    <span>Delete Account</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                        <a href="#" class="settings-link-item">
-                            <span class="settings-link-icon">🚪</span>
-                            <span>Log Out</span>
-                            <span class="arrow">&rsaquo;</span>
-                        </a>
+                <div class="settings-grid">
+                    
+                    <!-- ACCOUNT SECTION -->
+                    <div class="settings-card">
+                        <h3 class="settings-group-title">Account</h3>
+                        <div class="settings-menu-list">
+                            <a href="edit-character.php" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-regular fa-user"></i>
+                                    <span>Edit Character Name & Avatar</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                            <a href="#" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-link"></i>
+                                    <span>Connected Guild Accounts</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                            <a href="#" class="settings-menu-item danger-text">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span>Delete Account</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                            
+                            <!-- LOG OUT BUTTON -->
+                            <div class="settings-menu-item settings-item-clickable" id="btn-logout">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    <span>Log Out</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="settings-card danger-card">
-                    <h3>Danger Zone</h3>
-                    <div class="settings-links-list">
-                        <a href="reset-progress.php" class="settings-link-item text-danger">
-                            <span class="settings-link-icon">⚠️</span>
-                            <span>Reset Character Progress</span>
-                            <span class="arrow">&rsaquo;</span>
-                        </a>
+                    <!-- PREFERENCES SECTION -->
+                    <div class="settings-card">
+                        <h3 class="settings-group-title">Preferences</h3>
+                        <div class="settings-menu-list">
+                            <a href="#" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-music"></i>
+                                    <span>Sound Effects & Quest Audio</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                            <a href="#" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-regular fa-bell"></i>
+                                    <span>Boss Reminders & Push Notifications</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                        </div>
                     </div>
+
+                    <!-- DANGER ZONE SECTION -->
+                    <div class="settings-card">
+                        <h3 class="settings-group-title">Danger Zone</h3>
+                        <div class="settings-menu-list">
+                            <a href="#" class="settings-menu-item warning-text">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span>Reset Character Progress</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SYSTEM SECTION -->
+                    <div class="settings-card">
+                        <h3 class="settings-group-title">System</h3>
+                        <div class="settings-menu-list">
+                            <a href="#" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-regular fa-moon"></i>
+                                    <span>Dark Theme Intensity</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                            <a href="#" class="settings-menu-item">
+                                <div class="menu-item-label">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span>Language / Realm</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Right Column: Preferences & System -->
-            <div class="settings-column">
-                <div class="settings-card">
-                    <h3>Preferences</h3>
-                    <div class="settings-links-list">
-                        <a href="sound-settings.php" class="settings-link-item">
-    <span class="settings-link-icon">🎵</span>
-    <span>Sound Effects & Quest Audio</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                        <a href="notifications-settings.php" class="settings-link-item">
-    <span class="settings-link-icon">🔔</span>
-    <span>Notifications</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                    </div>
-                </div>
-
-                <div class="settings-card">
-                    <h3>System</h3>
-                    <div class="settings-links-list">
-                        <a href="theme-intensity.php" class="settings-link-item">
-    <span class="settings-link-icon">🎨</span>
-    <span>Dark Theme Intensity</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                        <a href="language-realm.php" class="settings-link-item">
-    <span class="settings-link-icon">🌐</span>
-    <span>Language / Realm</span>
-    <span class="arrow">&rsaquo;</span>
-</a>
-                    </div>
-                </div>
+    <!-- LOGOUT CONFIRMATION MODAL -->
+    <div id="logout-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="modal-title">Log Out</h3>
+            <p class="modal-desc">Are you sure you want to log out?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn-modal btn-cancel">Cancel</button>
+                <button id="modal-confirm" class="btn-modal btn-logout-confirm">Log Out</button>
             </div>
         </div>
-    </main>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('btn-logout');
+            const logoutModal = document.getElementById('logout-modal');
+            const cancelBtn = document.getElementById('modal-cancel');
+            const confirmBtn = document.getElementById('modal-confirm');
+
+            if (logoutBtn && logoutModal) {
+                logoutBtn.addEventListener('click', () => {
+                    logoutModal.style.display = 'flex';
+                });
+
+                cancelBtn.addEventListener('click', () => {
+                    logoutModal.style.display = 'none';
+                });
+
+                logoutModal.addEventListener('click', (e) => {
+                    if (e.target === logoutModal) {
+                        logoutModal.style.display = 'none';
+                    }
+                });
+
+                confirmBtn.addEventListener('click', () => {
+                    window.location.href = '../api/logout.php';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,102 +1,271 @@
+<?php
+session_start();
+require_once '../config/database.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Fetch user data directly for fast initial page load
+$stmt = $pdo->prepare("SELECT username, email, avatar_path FROM users WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user =$stmt->fetch();
+
+$username = $user['username'] ?? 'User';$email    = $user['email'] ?? '--';$avatar   = $user['avatar'] ?? '';$defaultSvg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMmEzNzU2Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiLz48cGF0aCBkPSJNMTIgMTRjLTYuMSAwLTggNC04IDR2MmgxNnYtMnMtMS45LTQtOC00eiIvPjwvc3ZnPg==";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - The Avengers</title>
+    <title>Profile - Level Up Life</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assests/css/style.css">
-</head>
-<body class="dashboard-page-body">
+    <style>
+        .profile-banner-card {
+            position: relative;
+        }
 
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
+        .settings-top-right {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #8f9bba;
+            font-size: 1.4rem;
+            text-decoration: none;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-top-right:hover {
+            color: #ffffff;
+            transform: rotate(30deg);
+        }
+
+        .profile-avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
             <a href="collection.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-                </svg>
+                <i class="fa-regular fa-folder"></i>
                 <span>Collection</span>
             </a>
-
             <a href="dashboard.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
-                </svg>
+                <i class="fa-solid fa-border-all"></i>
                 <span>Dashboard</span>
             </a>
-
             <a href="quests.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
+                <i class="fa-solid fa-shield-halved"></i>
                 <span>Quest</span>
             </a>
-
             <a href="party.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+                <i class="fa-solid fa-users"></i>
                 <span>Party</span>
             </a>
-
             <a href="profile.php" class="nav-item active">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <i class="fa-regular fa-user"></i>
                 <span>Profile</span>
             </a>
-        </nav>
-    </aside>
+        </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content profile-main-content">
-        <!-- Page Switcher Bar -->
-        <div class="page-switcher-bar">
-            <a href="party.php" class="switch-btn">&larr; Party Chat</a>
-            <span class="switcher-title">User Profile</span>
-            <a href="settings.php" class="switch-btn">Settings &rarr;</a>
-        </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="profile-page-wrapper">
+                
+                <!-- TOP PROFILE BANNER -->
+                <div class="profile-card profile-banner-card">
+                    
+                    <a href="settings.php" class="settings-top-right" title="Settings">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
 
-        <div class="profile-header-card">
-            <div class="profile-user-info">
-                <div class="profile-avatar-circle"></div>
-                <div class="profile-meta">
-                    <h2>Adventurer Profile</h2>
-                    <p class="profile-handle">@the_avengers_hero</p>
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar-container">
+                            <!-- Show uploaded avatar if it exists; otherwise fallback to SVG avatar -->
+                            <img id="profile-avatar" src="<?php echo (!empty($avatar) && file_exists('../' .$avatar)) ? '../' . htmlspecialchars($avatar) :$defaultSvg; ?>" alt="User Avatar">
+                        </div>
+                        <h2 id="profile-username" class="profile-username"><?php echo htmlspecialchars($username); ?></h2>
+                        <button class="btn-edit-profile" id="btn-edit-profile">Edit profile</button>
+                    </div>
+
+                    <div class="profile-level-section">
+                        <div class="level-header">
+                            <span id="profile-level-title" class="level-title">Level 1 Adventurer</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="profile-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <p class="profile-tagline">Grinding code and conquering bugs ⚡</p>
+                    </div>
                 </div>
-            </div>
-            <a href="settings.php" class="settings-gear-btn" title="Go to Settings">
-                ⚙️
-            </a>
-        </div>
 
-        <div class="profile-details-grid">
-            <div class="profile-card">
-                <h3>Character Stats</h3>
-                <ul class="stats-list">
-                    <li><span>Level:</span> <strong>5</strong></li>
-                    <li><span>Class:</span> <strong>Paladin / Mage</strong></li>
-                    <li><span>Completed Quests:</span> <strong>24</strong></li>
-                </ul>
-            </div>
+                <!-- MIDDLE SECTION: ACCOUNT INFO & STATS OVERVIEW -->
+                <div class="profile-grid-two-col">
+                    
+                    <!-- Account Information -->
+                    <div class="profile-card">
+                        <div class="card-header-title">
+                            <i class="fa-solid fa-id-card"></i>
+                            <h3>Account Information</h3>
+                        </div>
+                        <div class="info-table">
+                            <div class="info-row">
+                                <span class="info-label">Full Name</span>
+                                <span id="info-username" class="info-value"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email</span>
+                                <span id="info-email" class="info-value"><?php echo htmlspecialchars($email); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Role</span>
+                                <span id="info-role" class="info-value">Adventurer</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Joined</span>
+                                <span id="info-joined" class="info-value">--</span>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="profile-card">
-                <h3>Achievements Unlocked</h3>
-                <p class="profile-desc">View your tier badges and collected artifacts in the Collection page.</p>
-                <a href="collection.php" class="profile-action-link">Open Collection &rarr;</a>
-            </div>
-        </div>
-    </main>
+                    <!-- Statistics Overview -->
+                    <div class="profile-card">
+                        <div class="card-header-title">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <h3>Statistics Overview</h3>
+                        </div>
+                        <div class="info-table">
+                            <div class="info-row">
+                                <span class="info-label">Quests Completed</span>
+                                <span id="stat-quests" class="info-value">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Current Streak</span>
+                                <span id="stat-streak" class="info-value">0 Days</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Party Members</span>
+                                <span id="stat-party" class="info-value">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Total XP Earned</span>
+                                <span id="stat-xp" class="info-value">0 XP</span>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
+
+                <!-- BOTTOM SECTION: ACHIEVEMENTS & RANKING -->
+                <div class="profile-grid-two-col">
+                    
+                    <div class="profile-card">
+                        <div class="card-header-title">
+                            <i class="fa-solid fa-trophy"></i>
+                            <h3>Achievements & Badges</h3>
+                        </div>
+                        <div id="achievements-container" class="achievements-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <div class="card-header-title">
+                            <i class="fa-solid fa-medal"></i>
+                            <h3>Rank & Standing</h3>
+                        </div>
+                        <div class="rank-display-wrapper">
+                            <div class="rank-badge-box">
+                                <div class="rank-icon-circle">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="rank-details">
+                                    <span class="rank-label">Global Standing</span>
+                                    <h2 id="rank-global" class="rank-number">#--</h2>
+                                    <span id="rank-tier" class="rank-tier-name">Novice</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const editBtn = document.getElementById('btn-edit-profile');
+            if (editBtn) {
+                editBtn.addEventListener('click', () => {
+                    window.location.href = 'edit-character.php';
+                });
+            }
+
+            // Fetch extra stats, level progress, and achievements dynamically
+            fetch('../api/get_profile.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.success) {
+                        const p = data.profile;
+                        
+                        if (p.username) {
+                            document.getElementById('profile-username').textContent = p.username;
+                            document.getElementById('info-username').textContent = p.username;
+                        }
+                        if (p.email) document.getElementById('info-email').textContent = p.email;
+                        if (p.avatar_path) document.getElementById('profile-avatar').src = '../' + p.avatar_path;
+
+                        if (p.level) document.getElementById('profile-level-title').textContent = `Level ${p.level} ${p.level_title || ''}`;
+                        if (p.level_progress) document.getElementById('profile-progress-fill').style.width = `${p.level_progress}%`;
+
+                        if (p.role) document.getElementById('info-role').textContent = p.role;
+                        if (p.created_at) document.getElementById('info-joined').textContent = p.created_at;
+
+                        if (p.stats) {
+                            document.getElementById('stat-quests').textContent = p.stats.quests_completed || 0;
+                            document.getElementById('stat-streak').textContent = (p.stats.current_streak || 0) + ' Days';
+                            document.getElementById('stat-party').textContent = p.stats.party_members || 0;
+                            document.getElementById('stat-xp').textContent = (p.stats.total_xp || 0) + ' XP';
+                        }
+
+                        if (p.rank) {
+                            document.getElementById('rank-global').textContent = p.rank.global_rank || '#--';
+                            document.getElementById('rank-tier').textContent = p.rank.tier_name || 'Novice';
+                        }
+
+                        const achContainer = document.getElementById('achievements-container');
+                        if (!p.achievements || p.achievements.length === 0) {
+                            achContainer.innerHTML = '<p style="color:#8f9bba; padding:10px 0;">No achievements earned yet.</p>';
+                        } else {
+                            achContainer.innerHTML = p.achievements.map(a => `
+                                <div class="badge-item">
+                                    <img src="${a.badge_image}" alt="${a.badge_name}" class="badge-icon">
+                                    <div class="badge-info">
+                                        <div class="badge-title">${a.badge_name}</div>
+                                        <div class="badge-desc">${a.description}</div>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching profile stats:', err));
+        });
+    </script>
 </body>
 </html>

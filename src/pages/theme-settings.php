@@ -1,15 +1,37 @@
 <?php
 $current_page = 'settings';
+
+// Theme options configuration
+$themes = [
+    [
+        'id' => 'theme_oled',
+        'title' => 'Midnight Black (OLED)',
+        'description' => 'Pure black background for OLED screens',
+        'selected' => false
+    ],
+    [
+        'id' => 'theme_abyssal',
+        'title' => 'Abyssal Navy',
+        'description' => 'Deep navy tones optimized for fantasy immersion',
+        'selected' => true
+    ],
+    [
+        'id' => 'theme_dungeon',
+        'title' => 'Dungeon Charcoal',
+        'description' => 'Soft muted charcoal gray for low-light environments',
+        'selected' => false
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language / Realm - Level Up Life</title>
+    <title>Dark Theme Intensity - Level Up Life</title>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- App Stylesheets -->
+    <!-- App Stylesheet -->
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assests/css/style.css">
 </head>
@@ -47,38 +69,25 @@ $current_page = 'settings';
             <div class="top-header">
                 <a href="settings.php" class="back-link-title">
                     <i class="fa-solid fa-chevron-left"></i>
-                    <h2>Language / Realm</h2>
+                    <h2>Dark Theme Intensity</h2>
                 </a>
             </div>
 
-            <!-- Language & Realm Workspace Card -->
-            <div class="dashboard-card language-realm-card">
-                <div class="setting-sections-container">
-                    
-                    <!-- Game Language Section -->
-                    <div class="setting-section">
-                        <h4 class="section-subtitle">GAME LANGUAGE</h4>
-                        <div class="realm-row">
-                            <div class="realm-info-group">
-                                <i class="fa-solid fa-globe"></i>
-                                <span class="realm-title">English (US)</span>
+            <!-- Theme Settings Workspace Card -->
+            <div class="dashboard-card theme-settings-card">
+                <div class="theme-options-list">
+                    <?php foreach ($themes as $theme): ?>
+                        <label class="theme-option-row" for="<?php echo $theme['id']; ?>">
+                            <div class="theme-text-info">
+                                <span class="theme-title"><?php echo $theme['title']; ?></span>
+                                <span class="theme-description"><?php echo $theme['description']; ?></span>
                             </div>
-                            <i class="fa-solid fa-chevron-right arrow-icon"></i>
-                        </div>
-                    </div>
-
-                    <!-- Server Realm Section -->
-                    <div class="setting-section">
-                        <h4 class="section-subtitle">SERVER REALM</h4>
-                        <div class="realm-row">
-                            <div class="realm-info-group">
-                                <i class="fa-solid fa-chess-rook"></i>
-                                <span class="realm-title">North America (NA-East)</span>
+                            <div class="radio-wrapper">
+                                <input type="radio" id="<?php echo $theme['id']; ?>" name="dark_theme_intensity" value="<?php echo $theme['id']; ?>" <?php echo $theme['selected'] ? 'checked' : ''; ?>>
+                                <span class="custom-radio"></span>
                             </div>
-                            <span class="latency-badge">Low Latency (32ms)</span>
-                        </div>
-                    </div>
-
+                        </label>
+                    <?php endforeach; ?>
                 </div>
             </div>
 

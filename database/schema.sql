@@ -22,9 +22,6 @@ CREATE TABLE users (
     xp INT NOT NULL DEFAULT 0,
     level INT NOT NULL DEFAULT 1,
 
-    energy INT NOT NULL DEFAULT 100,
-    max_energy INT NOT NULL DEFAULT 100,
-
     streak INT NOT NULL DEFAULT 0,
 
     skill_points INT NOT NULL DEFAULT 0,
@@ -251,3 +248,11 @@ VALUES
     ('Elite', 'Among the strongest players.', 20, 29),
     ('Master', 'A highly experienced player.', 30, 49),
     ('Legend', 'One of the most experienced players.', 50, NULL);
+
+
+ALTER TABLE users
+ADD COLUMN level_title VARCHAR(50) DEFAULT 'Adventurer',
+ADD COLUMN level_progress INT DEFAULT 0,
+ADD COLUMN energy_current INT DEFAULT 100,
+ADD COLUMN energy_max INT DEFAULT 100,
+ADD COLUMN gold INT DEFAULT 0;

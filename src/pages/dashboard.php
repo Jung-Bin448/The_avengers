@@ -1,203 +1,197 @@
+<?php
+session_start();
+require_once '../config/database.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$user_id =$_SESSION['user_id'];
+
+// 1. Fetch user profile data
+$stmt =$pdo->prepare("SELECT username, level, level_title, level_progress, energy_current, energy_max, streak, skill_points FROM users WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$user =$stmt->fetch();
+
+$username      =$user['username'] ?? 'Adventurer';
+$level         =$user['level'] ?? 1;
+$level_title   =$user['level_title'] ?? 'Adventurer';
+$level_progress=$user['level_progress'] ?? 0;
+$energy_curr   =$user['energy_current'] ?? 100;
+$energy_max    =$user['energy_max'] ?? 100;
+$streak        =$user['streak'] ?? 0;
+$skill_points  =$user['skill_points'] ?? 0;
+
+// 2. Fetch daily quests stats
+$qStmt =$pdo->prepare("SELECT 
+    COUNT(*) as total, 
+    SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed 
+    FROM quests WHERE user_id = ? AND quest_type = 'daily_bounty'");
+$qStmt->execute([$user_id]);
+$questStats =$qStmt->fetch();
+
+$totalQuests     =$questStats['total'] ?? 0;
+$completedQuests =$questStats['completed'] ?? 0;
+$dailyPercentage = ($totalQuests > 0) ? round(($completedQuests / $totalQuests) * 100) : 0;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - The Avengers</title>
+    <title>Dashboard - Level Up Life</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assests/css/style.css">
-    <link rel="stylesheet" href="../assests/css/dashboard.css">
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="dashboard-page-body">
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
             <a href="collection.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-                </svg>
+                <i class="fa-regular fa-folder"></i>
                 <span>Collection</span>
             </a>
-
             <a href="dashboard.php" class="nav-item active">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-                    <rect x="14" y="14" width="7" height="7" rx="2"></rect>
-                    <rect x="3" y="14" width="7" height="7" rx="2"></rect>
-                </svg>
+                <i class="fa-solid fa-border-all"></i>
                 <span>Dashboard</span>
             </a>
-
             <a href="quests.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
+                <i class="fa-solid fa-shield-halved"></i>
                 <span>Quest</span>
             </a>
-
             <a href="party.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+                <i class="fa-solid fa-users"></i>
                 <span>Party</span>
             </a>
-
             <a href="profile.php" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <i class="fa-regular fa-user"></i>
                 <span>Profile</span>
             </a>
-        </nav>
-    </aside>
+        </aside>
 
-    <!-- Main Dashboard Area -->
-    <main class="main-content">
-        <!-- Top Bar -->
-        <header class="top-bar">
-            <div class="user-greeting">
-                <h1>Hi, Alex!</h1>
-                <p class="subtitle">Level 5 Adventurer</p>
-            </div>
-
-            <div class="level-progress-wrapper">
-                <span class="progress-label">Level Progress: 72%</span>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: 72%;"></div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Banner Header -->
+            <div class="dashboard-header-banner" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h1 style="margin: 0; font-size: 1.8rem; color: #fff;">Hi, <?php echo htmlspecialchars($username); ?>!</h1>
+                    <p style="margin: 5px 0 0 0; color: #8f9bba; font-size: 0.95rem;">Level <?php echo (int)$level; ?> <?php echo htmlspecialchars($level_title); ?></p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 0.85rem; color: #8f9bba; font-weight: 600;">Level Progress: <?php echo (int)$level_progress; ?>%</span>
+                    <div style="width: 120px; background: #1e293b; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="width: <?php echo (int)$level_progress; ?>%; background: #3b82f6; height: 100%;"></div>
+                    </div>
+                    <a href="notifications.php" style="color: #8f9bba; text-decoration: none; font-size: 1.2rem;"><i class="fa-solid fa-bell"></i></a>
+                    <a href="logout.php" style="color: #8f9bba; text-decoration: none; font-size: 1.2rem;" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
 
-            <div class="top-bar-actions">
-                <button class="icon-btn notification-btn" title="Notifications">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                </button>
-            </div>
-        </header>
-
-        <!-- Daily Quests Card -->
-        <section class="quest-summary-card">
-            <div class="quest-info">
-                <h2>Daily Quests</h2>
-                <p>2 of 5 Completed</p>
-            </div>
-            <div class="circular-progress">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path class="circle" stroke-dasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <text x="18" y="20.35" class="percentage">40%</text>
-                </svg>
-            </div>
-        </section>
-
-        <!-- Stats Grid -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon icon-energy">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                    </svg>
+            <!-- Daily Quests Progress Bar Card -->
+            <div class="profile-card" style="background: #111827; border: 1px solid #1f2937; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 5px 0; color: #fff; font-size: 1.1rem;">Daily Quests</h3>
+                    <p style="margin: 0; color: #8f9bba; font-size: 0.9rem;"><?php echo (int)$completedQuests; ?> of <?php echo (int)$totalQuests; ?> Completed</p>
                 </div>
-                <div class="stat-details">
-                    <h3>Energy</h3>
-                    <p class="stat-value">100 / 100</p>
+                <div style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; border: 3px solid #10b981; color: #10b981; font-weight: bold; font-size: 0.85rem;">
+                    <?php echo (int)$dailyPercentage; ?>%
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon icon-gold">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 6v12M9 9h6M9 15h6" stroke="#121826" stroke-width="2"></path>
-                    </svg>
+            <!-- Metric Cards Grid -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px;">
+                
+                <!-- Energy Card -->
+                <div style="background: #111827; border: 1px solid #1f2937; padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-bolt"></i></div>
+                    <div style="color: #8f9bba; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 5px;">Energy</div>
+                    <div style="color: #fff; font-size: 1.25rem; font-weight: bold;"><?php echo (int)$energy_curr; ?> / <?php echo (int)$energy_max; ?></div>
                 </div>
-                <div class="stat-details">
-                    <h3>Gold</h3>
-                    <p class="stat-value">1,240</p>
+
+                <!-- Streak Card -->
+                <div style="background: #111827; border: 1px solid #1f2937; padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="color: #3b82f6; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-fire"></i></div>
+                    <div style="color: #8f9bba; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 5px;">Streak</div>
+                    <div style="color: #fff; font-size: 1.25rem; font-weight: bold;"><?php echo (int)$streak; ?> Days</div>
+                </div>
+
+                <!-- Skill Points Card -->
+                <div style="background: #111827; border: 1px solid #1f2937; padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="color: #fbbf24; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-star"></i></div>
+                    <div style="color: #8f9bba; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 5px;">Skill Points</div>
+                    <div style="color: #fff; font-size: 1.25rem; font-weight: bold;"><?php echo (int)$skill_points; ?> Available</div>
+                </div>
+
+            </div>
+
+            <!-- Skill Mastery / XP History Section -->
+            <div style="background: #111827; border: 1px solid #1f2937; padding: 25px; border-radius: 12px; min-height: 250px;">
+                <h3 style="margin: 0 0 5px 0; color: #fff; font-size: 1.1rem;">Skill Mastery / XP History</h3>
+                <p id="xp-avg-label" style="margin: 0 0 20px 0; color: #8f9bba; font-size: 0.85rem;">Avg: Loading...</p>
+                
+                <!-- Live Chart Canvas Wrapper -->
+                <div style="position: relative; height: 220px; width: 100%;">
+                    <canvas id="xpHistoryChart"></canvas>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon icon-streak">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2c0 0-6 4-6 10a6 6 0 0 0 12 0c0-6-6-10-6-10z"></path>
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h3>Streak</h3>
-                    <p class="stat-value">7 Days</p>
-                </div>
-            </div>
+        </main>
+    </div>
 
-            <div class="stat-card">
-                <div class="stat-icon icon-skills">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9 12 2"></polygon>
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h3>Skill Points</h3>
-                    <p class="stat-value">5 Available</p>
-                </div>
-            </div>
-        </section>
+    <!-- Script to fetch data and build the live Chart.js graph -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('../api/get-xp-history.php')
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        document.getElementById('xp-avg-label').textContent = `Avg: ${response.avg} XP/day`;
 
-        <!-- Skill Mastery / XP History Chart Card -->
-        <section class="chart-card">
-            <div class="chart-header">
-                <h2>Skill Mastery / XP History</h2>
-                <p class="chart-subtitle">Avg: 450 XP/day</p>
-            </div>
-
-            <div class="chart-container">
-                <div class="y-axis">
-                    <span>160</span>
-                    <span>120</span>
-                    <span>80</span>
-                    <span>40</span>
-                </div>
-
-                <div class="chart-area">
-                    <svg viewBox="0 0 500 150" class="chart-svg" preserveAspectRatio="none">
-                        <!-- Grid Lines -->
-                        <line x1="0" y1="10" x2="500" y2="10" class="grid-line" />
-                        <line x1="0" y1="50" x2="500" y2="50" class="grid-line" />
-                        <line x1="0" y1="90" x2="500" y2="90" class="grid-line" />
-                        <line x1="0" y1="130" x2="500" y2="130" class="grid-line" />
-
-                        <!-- Purple Curve -->
-                        <path d="M 20 120 C 100 40, 180 20, 240 60 C 300 100, 380 140, 480 100" class="line-purple" />
-                        <circle cx="20" cy="120" r="4" class="dot-purple" />
-                        <circle cx="100" cy="70" r="4" class="dot-purple" />
-                        <circle cx="220" cy="40" r="4" class="dot-purple" />
-                        <circle cx="270" cy="70" r="4" class="dot-purple" />
-                        <circle cx="330" cy="110" r="4" class="dot-purple" />
-                        <circle cx="410" cy="130" r="4" class="dot-purple" />
-
-                        <!-- Teal Curve -->
-                        <path d="M 20 130 C 120 130, 220 95, 300 70 C 380 30, 420 40, 480 130" class="line-teal" />
-                        <circle cx="20" cy="130" r="4" class="dot-teal" />
-                        <circle cx="270" cy="95" r="4" class="dot-teal" />
-                        <circle cx="380" cy="40" r="4" class="dot-teal" />
-                        <circle cx="430" cy="70" r="4" class="dot-teal" />
-                    </svg>
-
-                    <!-- Add Button Overlay -->
-                    <button class="chart-add-btn" title="Add Entry">+</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
+                        const ctx = document.getElementById('xpHistoryChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: response.labels,
+                                datasets: [{
+                                    label: 'XP Gained',
+                                    data: response.data,
+                                    borderColor: '#3b82f6',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.3,
+                                    pointBackgroundColor: '#3b82f6',
+                                    pointRadius: 4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    x: {
+                                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                        ticks: { color: '#8f9bba' }
+                                    },
+                                    y: {
+                                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                        ticks: { color: '#8f9bba' },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.error('Error loading XP history chart:', err));
+        });
+    </script>
 </body>
 </html>
