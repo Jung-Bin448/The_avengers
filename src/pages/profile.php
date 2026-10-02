@@ -10,9 +10,12 @@ if (!isset($_SESSION['user_id'])) {
 // Fetch user data directly for fast initial page load
 $stmt = $pdo->prepare("SELECT username, email, avatar_path FROM users WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
-$user =$stmt->fetch();
+$user = $stmt->fetch();
 
-$username = $user['username'] ?? 'User';$email    = $user['email'] ?? '--';$avatar   = $user['avatar'] ?? '';$defaultSvg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMmEzNzU2Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiLz48cGF0aCBkPSJNMTIgMTRjLTYuMSAwLTggNC04IDR2MmgxNnYtMnMtMS45LTQtOC00eiIvPjwvc3ZnPg==";
+$username   = $user['username'] ?? 'User';
+$email      = $user['email'] ?? '--';
+$avatar     = $user['avatar_path'] ?? ''; // <-- Fixed from $user['avatar'] to $user['avatar_path']
+$defaultSvg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMmEzNzU2Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9IjQiLz48cGF0aCBkPSJNMTIgMTRjLTYuMSAwLTggNC04IDR2MmgxNnYtMnMtMS55LTQtOC00eiIvPjwvc3ZnPg==";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +47,19 @@ $username = $user['username'] ?? 'User';$email    = $user['email'] ?? '--';$avat
         .settings-top-right:hover {
             color: #ffffff;
             transform: rotate(30deg);
+        }
+
+        .profile-avatar-container {
+            width: 100px;  /* Adjust this to match your desired circle size */
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e293b;
+            border: 2px solid #334155;
+            margin: 0 auto 15px auto; /* Centers it nicely */
         }
 
         .profile-avatar-container img {

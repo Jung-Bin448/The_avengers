@@ -3,16 +3,16 @@ $current_page = 'collection';
 
 // Mock data for achievements/collection items
 $achievements = [
-    ['level' => 1, 'title' => 'LEVEL 1', 'icon' => 'fa-certificate', 'color' => '#94a3b8', 'unlocked' => true],
-    ['level' => 2, 'title' => 'LEVEL 2', 'icon' => 'fa-gem', 'color' => '#38bdf8', 'unlocked' => true],
-    ['level' => 3, 'title' => 'LEVEL 3', 'icon' => 'fa-shield-halved', 'color' => '#10b981', 'unlocked' => true],
-    ['level' => 4, 'title' => 'LEVEL 4', 'icon' => 'fa-award', 'color' => '#818cf8', 'unlocked' => true],
-    ['level' => 5, 'title' => 'LEVEL 5', 'icon' => 'fa-crown', 'color' => '#a855f7', 'unlocked' => true],
-    ['level' => 6, 'title' => 'LEVEL 6', 'icon' => 'fa-dragon', 'color' => '#c084fc', 'unlocked' => false],
-    ['level' => 7, 'title' => 'LEVEL 7', 'icon' => 'fa-bolt', 'color' => '#f43f5e', 'unlocked' => false],
-    ['level' => 8, 'title' => 'LEVEL 8', 'icon' => 'fa-wand-magic-sparkles', 'color' => '#e879f9', 'unlocked' => false],
-    ['level' => 9, 'title' => 'LEVEL 9', 'icon' => 'fa-feather', 'color' => '#cbd5e1', 'unlocked' => false],
-    ['level' => 10, 'title' => 'LEVEL 10', 'icon' => 'fa-star', 'color' => '#eab308', 'unlocked' => false],
+    ['level' => 1, 'title' => 'LEVEL 1', 'img' => 'level-1.png', 'unlocked' => true],
+    ['level' => 2, 'title' => 'LEVEL 2', 'img' => 'level-2.png', 'unlocked' => true],
+    ['level' => 3, 'title' => 'LEVEL 3', 'img' => 'level-3.png', 'unlocked' => true],
+    ['level' => 4, 'title' => 'LEVEL 4', 'img' => 'level-4.png', 'unlocked' => true],
+    ['level' => 5, 'title' => 'LEVEL 5', 'img' => 'level-5.png', 'unlocked' => true],
+    ['level' => 6, 'title' => 'LEVEL 6', 'img' => 'level-6.png', 'unlocked' => false],
+    ['level' => 7, 'title' => 'LEVEL 7', 'img' => 'level-7.png', 'unlocked' => false],
+    ['level' => 8, 'title' => 'LEVEL 8', 'img' => 'level-8.png', 'unlocked' => false],
+    ['level' => 9, 'title' => 'LEVEL 9', 'img' => 'level-9.png', 'unlocked' => false],
+    ['level' => 10, 'title' => 'LEVEL 10', 'img' => 'level-10.png', 'unlocked' => false],
 ];
 ?>
 <!DOCTYPE html>
@@ -26,6 +26,34 @@ $achievements = [
     <!-- App Stylesheet -->
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assests/css/style.css">
+    <style>
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 25px;
+            padding: 30px;
+            justify-items: center;
+        }
+        .achievement-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .achievement-item img {
+            width: 85px;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.2s ease;
+        }
+        .achievement-item.locked img {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+        .achievement-item:hover img {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -70,12 +98,7 @@ $achievements = [
                 <div class="achievement-grid">
                     <?php foreach ($achievements as $item): ?>
                         <div class="achievement-item <?php echo $item['unlocked'] ? 'unlocked' : 'locked'; ?>">
-                            <div class="badge-icon-wrapper" style="--badge-color: <?php echo $item['color']; ?>;">
-                                <i class="fa-solid <?php echo $item['icon']; ?>"></i>
-                            </div>
-                            <span class="badge-title" style="<?php echo $item['unlocked'] ? 'color: ' . $item['color'] . ';' : ''; ?>">
-                                <?php echo $item['title']; ?>
-                            </span>
+                            <img src="../assests/img/badges/<?php echo $item['img']; ?>" alt="<?php echo $item['title']; ?>">
                         </div>
                     <?php endforeach; ?>
                 </div>

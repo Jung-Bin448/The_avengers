@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id'])) {
 require_once '../config/database.php';
 $user_id = $_SESSION['user_id'];
 
-// Level Thresholds Array
 $level_thresholds = [
     1 => 0, 2 => 5000, 3 => 12000, 4 => 22000, 5 => 35000,
     6 => 52000, 7 => 74000, 8 => 101000, 9 => 134000, 10 => 175000
@@ -23,17 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($action === 'create') {
             $title = trim($_POST['quest_title'] ?? '');
             $details = trim($_POST['quest_details'] ?? '');
-            $type = $_POST['quest_type'] ?? 'main_quest';
+            $type = $_POST['quest_type'] ?? 'daily_bounty';
             $deadline = $_POST['deadline_datetime'] ?? date('Y-m-d H:i:s');
             
+            $db_quest_type = 'daily_bounty';
+            if ($type === 'main_quest' || $type === 'boss_raid') {
+                $db_quest_type = 'boss_raid';
+            } elseif ($type === 'side_quest') {
+                $db_quest_type = 'side_quest';
+            }
+
             $due_date = date('Y-m-d', strtotime($deadline));
-            $start_time = '09:00:00';
-            $end_time = date('H:i:s', strtotime($deadline));
-            
             $xp_reward = (rand(1, 10) * 50);
 
-            $stmt = $pdo->prepare("INSERT INTO quests (user_id, title, description, quest_type, due_date, start_time, end_time, xp_reward, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-            $stmt->execute([$user_id, $title, $details, $type, $due_date, $start_time, $end_time, $xp_reward]);
+            $stmt = $pdo->prepare("INSERT INTO quests (user_id, title, description, quest_type, due_date, xp_reward, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+            $stmt->execute([$user_id, $title, $details, $db_quest_type, $due_date, $xp_reward]);
             
             echo json_encode(['success' => true]);
             exit;
@@ -43,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $quest_action = $_POST['quest_action'] ?? '';
 
             if ($quest_id > 0) {
-                $id_col = 'id';
+                $id_col = 'quest_id';
                 try {
                     $chk_col = $pdo->query("SHOW COLUMNS FROM quests LIKE 'quest_id'");
-                    if ($chk_col && $chk_col->fetch()) { $id_col = 'quest_id'; }
-                } catch (Exception $ex) {}
+                    if (!$chk_col || !$chk_col->fetch()) { $id_col = 'id'; }
+                } catch (Exception $ex) { $id_col = 'id'; }
 
                 if ($quest_action === 'complete') {
                     $q_chk = $pdo->prepare("SELECT xp_reward FROM quests WHERE {$id_col} = ? AND user_id = ?");
@@ -55,14 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $q_data = $q_chk->fetch(PDO::FETCH_ASSOC);
                     $xp_gained = $q_data ? intval($q_data['xp_reward']) : 150;
 
-                    $upd = $pdo->prepare("UPDATE quests SET status = 'completed' WHERE {$id_col} = ? AND user_id = ?");
+                    $upd = $pdo->prepare("UPDATE quests SET status = 'completed', completed_at = NOW() WHERE {$id_col} = ? AND user_id = ?");
                     $upd->execute([$quest_id, $user_id]);
 
-                    $u_col = 'id';
+                    $u_col = 'user_id';
                     try {
                         $chk_ucol = $pdo->query("SHOW COLUMNS FROM users LIKE 'user_id'");
-                        if ($chk_ucol && $chk_ucol->fetch()) { $u_col = 'user_id'; }
-                    } catch (Exception $ex) {}
+                        if (!$chk_ucol || !$chk_ucol->fetch()) { $u_col = 'id'; }
+                    } catch (Exception $ex) { $u_col = 'id'; }
 
                     $u_stmt = $pdo->prepare("SELECT * FROM users WHERE {$u_col} = ?");
                     $u_stmt->execute([$user_id]);
@@ -82,29 +85,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         $upd_usr->execute([$new_xp, $new_level, $user_id]);
 
                         try {
-                            $today = date('Y-m-d');
-                            $chk_history = $pdo->prepare("SELECT id, xp_gained FROM xp_history WHERE user_id = ? AND logged_date = ?");
-                            $chk_history->execute([$user_id, $today]);
-                            $existing = $chk_history->fetch(PDO::FETCH_ASSOC);
-
-                            if ($existing) {
-                                $updated_xp = intval($existing['xp_gained']) + $xp_gained;
-                                $upd_hist = $pdo->prepare("UPDATE xp_history SET xp_gained = ? WHERE id = ?");
-                                $upd_hist->execute([$updated_xp, $existing['id']]);
-                            } else {
-                                $ins_hist = $pdo->prepare("INSERT INTO xp_history (user_id, xp_gained, logged_date) VALUES (?, ?, ?)");
-                                $ins_hist->execute([$user_id, $xp_gained, $today]);
-                            }
+                            $ins_hist = $pdo->prepare("INSERT INTO xp_history (user_id, xp_amount, source) VALUES (?, ?, ?)");
+                            $ins_hist->execute([$user_id, $xp_gained, 'Quest Completion']);
                         } catch (Exception $e) {}
                     }
 
                 } elseif ($quest_action === 'in_progress') {
-                    // Using 'active' or 'ongoing' to prevent ENUM/column length truncation errors
-                    $upd = $pdo->prepare("UPDATE quests SET status = 'active' WHERE {$id_col} = ? AND user_id = ?");
+                    $upd = $pdo->prepare("UPDATE quests SET status = 'in_progress' WHERE {$id_col} = ? AND user_id = ?");
                     $upd->execute([$quest_id, $user_id]);
                 } elseif ($quest_action === 'drop') {
-                    $del = $pdo->prepare("DELETE FROM quests WHERE {$id_col} = ? AND user_id = ?");
-                    $del->execute([$quest_id, $user_id]);
+                    $upd = $pdo->prepare("UPDATE quests SET status = 'cancelled' WHERE {$id_col} = ? AND user_id = ?");
+                    $upd->execute([$quest_id, $user_id]);
                 }
             }
             echo json_encode(['success' => true]);

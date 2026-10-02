@@ -26,12 +26,12 @@ if ($next_month > 12) { $next_month = 1; $next_year++; }
 
 $quests = [];
 try {
-    $stmt = $pdo->prepare("SELECT * FROM quests WHERE user_id = ? AND status IN ('pending', 'in_progress') ORDER BY due_date ASC, id DESC");
+    $stmt = $pdo->prepare("SELECT * FROM quests WHERE user_id = ? AND status IN ('pending', 'in_progress') ORDER BY due_date ASC, quest_id DESC");
     $stmt->execute([$user_id]);
     $quests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM quests WHERE user_id = ? AND status IN ('pending', 'in_progress') ORDER BY due_date ASC, quest_id DESC");
+        $stmt = $pdo->prepare("SELECT * FROM quests WHERE user_id = ? AND status IN ('pending', 'in_progress') ORDER BY due_date ASC, id DESC");
         $stmt->execute([$user_id]);
         $quests = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $ex) {}
@@ -95,22 +95,29 @@ try {
                 <div class="quests-list-container" style="display: flex; flex-direction: column; gap: 16px; margin-top: 15px;">
                     <?php foreach ($quests as $q): 
                         $type = $q['quest_type'] ?? 'daily_bounty';
-                        $label = ($type === 'main_quest') ? 'MAIN QUEST' : (($type === 'daily_habit') ? 'DAILY HABIT' : (($type === 'side_quest') ? 'SIDE QUEST' : 'MILESTONE'));
-                        $icon = ($type === 'daily_habit') ? 'fa-solid fa-bolt' : (($type === 'side_quest') ? 'fa-regular fa-circle' : (($type === 'milestone') ? 'fa-solid fa-trophy' : 'fa-solid fa-swords'));
-                        $qid = $q['id'] ?? ($q['quest_id'] ?? 0);
+                        $label = ($type === 'boss_raid') ? 'MAIN QUEST' : (($type === 'side_quest') ? 'SIDE QUEST' : 'DAILY BOUNTY');
+                        $icon = ($type === 'side_quest') ? 'fa-regular fa-circle' : 'fa-solid fa-swords';
+                        $qid = $q['quest_id'] ?? ($q['id'] ?? 0);
                         $is_due_selected = ($q['due_date'] === $selected_date);
-                        $formattedStart = !empty($q['start_time']) ? date('h:i A', strtotime($q['start_time'])) : '09:00 AM';
-                        $formattedEnd = !empty($q['end_time']) ? date('h:i A', strtotime($q['end_time'])) : '11:59 PM';
+                        $is_in_progress = (($q['status'] ?? '') === 'in_progress');
+                        
+                        // Styling differences for In Progress quests
+                        $cardBg = $is_in_progress ? '#1a1f2c' : ($is_due_selected ? '#172033' : '#111827');
+                        $cardBorder = $is_in_progress ? '1px solid #d97706' : ($is_due_selected ? '2px solid #3b82f6' : '1px solid #1f2937');
+                        $leftAccent = $is_in_progress ? 'border-left: 4px solid #f59e0b;' : '';
                     ?>
-                        <div class="quest-item-card openActionModal" data-id="<?php echo $qid; ?>" data-title="<?php echo htmlspecialchars($q['title']); ?>" style="background: <?php echo $is_due_selected ? '#172033' : '#111827'; ?>; border: <?php echo $is_due_selected ? '2px solid #3b82f6' : '1px solid #1f2937'; ?>; padding: 18px 24px; border-radius: 12px; display: flex; flex-direction: column; gap: 6px; cursor: pointer;">
+                        <div class="quest-item-card openActionModal" data-id="<?php echo $qid; ?>" data-title="<?php echo htmlspecialchars($q['title']); ?>" style="background: <?php echo $cardBg; ?>; border: <?php echo $cardBorder; ?>; <?php echo $leftAccent; ?> padding: 18px 24px; border-radius: 12px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; transition: transform 0.1s ease;">
                             <div style="display: flex; align-items: center; justify-content: space-between;">
                                 <div style="display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 0.75rem; font-weight: 700;">
                                     <i class="<?php echo $icon; ?>" style="color: #60a5fa;"></i><span><?php echo $label; ?></span>
-                                    <?php if ($is_due_selected): ?><span style="background: #2563eb; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem;">Due Today</span><?php endif; ?>
+                                    <?php if ($is_in_progress): ?>
+                                        <span style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 0.6rem;"></i> In Progress</span>
+                                    <?php endif; ?>
+                                    <?php if ($is_due_selected && !$is_in_progress): ?><span style="background: #2563eb; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem;">Due Today</span><?php endif; ?>
                                 </div>
                             </div>
                             <h4 style="color: #fff; font-size: 1.05rem; margin: 0; font-weight: 500;"><?php echo htmlspecialchars($q['title']); ?></h4>
-                            <div style="color: #94a3b8; font-size: 0.8rem;"><?php echo $formattedStart; ?> - <?php echo $formattedEnd; ?> &bull; <span style="color: #60a5fa; font-weight: 600;">+<?php echo $q['xp_reward'] ?? 150; ?> XP</span> &bull; Due: <?php echo htmlspecialchars($q['due_date']); ?></div>
+                            <div style="color: #94a3b8; font-size: 0.8rem;">09:00 AM - 11:59 PM &bull; <span style="color: #60a5fa; font-weight: 600;">+<?php echo $q['xp_reward'] ?? 150; ?> XP</span> &bull; Due: <?php echo htmlspecialchars($q['due_date']); ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -142,16 +149,8 @@ try {
                             <i class="fa-solid fa-swords"></i><span>Main Quest</span>
                         </label>
                         <label class="modal-type-pill" style="background: #1e293b; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #334155;">
-                            <input type="radio" name="quest_type" value="daily_habit" style="display: none;">
-                            <i class="fa-solid fa-bolt"></i><span>Daily Habit</span>
-                        </label>
-                        <label class="modal-type-pill" style="background: #1e293b; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #334155;">
                             <input type="radio" name="quest_type" value="side_quest" style="display: none;">
                             <i class="fa-regular fa-circle"></i><span>Side Quest</span>
-                        </label>
-                        <label class="modal-type-pill" style="background: #1e293b; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #334155;">
-                            <input type="radio" name="quest_type" value="milestone" style="display: none;">
-                            <i class="fa-solid fa-trophy"></i><span>Milestone</span>
                         </label>
                     </div>
                 </div>
@@ -159,7 +158,6 @@ try {
                     <div style="display: flex; align-items: center; gap: 6px; color: #fff; font-size: 0.85rem;">
                         <span style="color: #94a3b8;">Start:</span>
                         <span style="font-weight: 600;">Today</span>
-                        <input type="hidden" name="start_time" value="09:00">
                     </div>
                     <div style="width: 1px; height: 20px; background: #374151;"></div>
                     <div style="display: flex; align-items: center; gap: 6px; color: #f87171; font-size: 0.85rem;">
@@ -218,17 +216,6 @@ try {
             if (e.target === modal) modal.classList.remove('show');
             if (e.target === actionModal) actionModal.classList.remove('show');
         };
-
-        const pills = document.querySelectorAll('.modal-type-pill');
-        pills.forEach(pill => {
-            pill.onclick = () => {
-                pills.forEach(p => {
-                    p.style.background = '#1e293b'; p.style.color = '#cbd5e1'; p.style.borderColor = '#334155';
-                });
-                pill.style.background = '#2563eb'; pill.style.color = '#fff'; pill.style.borderColor = '#2563eb';
-                pill.querySelector('input').checked = true;
-            };
-        });
 
         document.getElementById('createQuestForm').onsubmit = async (e) => {
             e.preventDefault();
